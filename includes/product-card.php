@@ -18,8 +18,8 @@ $id = (int) $product['id'];
 <div class="product-slot" id="product-<?= $id ?>" data-category="<?= e($product['category']) ?>"
     data-name="<?= e($fullName) ?>">
 
-    <article class="product-card" data-product-id="<?= $id ?>" data-product-name="<?= e($fullName) ?>">
-
+   <article class="product-card" data-product-id="<?= $id ?>" data-product-name="<?= e($fullName) ?>"
+    data-price="<?= (int) $product['price'] ?>" data-image="<?= e($product['image']) ?>"> 
         <div class="card-inner">
 
             <!-- ================= FRONT ================= -->

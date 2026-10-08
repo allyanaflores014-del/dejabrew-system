@@ -185,7 +185,8 @@ document.addEventListener('click', function (event) {
             openCard(card);
             return;
         }
-        addToCart(card);
+        // addToCart(card);
+        addCardToCart(card);
         return;
     }
  
@@ -207,38 +208,72 @@ document.addEventListener('click', function (event) {
 /* ---------- 4. Cart ---------- */
 // A simple array. Each item looks like:
 // { productId: 1, productName: "Classic Iced Coffee", size: "Medium", sugar: "50%" }
-const cart = [];
+// const cart = [];
  
-const cartCount = document.getElementById('cart-count');
-const toast     = document.getElementById('toast');
+// const cartCount = document.getElementById('cart-count');
+// const toast     = document.getElementById('toast');
+// let toastTimer;
+ 
+// function addToCart(card) {
+//     // Read the values chosen on THIS card only.
+//     const item = {
+//         productId:   Number(card.dataset.productId),
+//         productName: card.dataset.productName,
+//         size:        card.querySelector('.size-select').value,
+//         sugar:       card.querySelector('.sugar-select').value
+//     };
+ 
+//     cart.push(item);
+//     console.log('Added to cart:', item);
+//     console.log('Cart now:', cart);
+ 
+//     updateCartBadge();
+//     showToast(item.productName + ' added to cart');
+// }
+ 
+// function updateCartBadge() {
+//     cartCount.textContent = cart.length;
+//     cartCount.hidden = cart.length === 0;
+// }
+ 
+// function showToast(message) {
+//     toast.textContent = message;
+//     toast.classList.add('is-visible');
+ 
+//     clearTimeout(toastTimer);
+//     toastTimer = setTimeout(function () {
+//         toast.classList.remove('is-visible');
+//     }, 2000);
+// }
+/* ---------- 4. Cart ---------- */
+// The cart itself lives in cart.js (saved in localStorage) so the cart page can read it.
+// Here we only collect the choices from the card and call addToCart() from cart.js.
+const toast = document.getElementById('toast');
 let toastTimer;
- 
-function addToCart(card) {
-    // Read the values chosen on THIS card only.
-    const item = {
-        productId:   Number(card.dataset.productId),
-        productName: card.dataset.productName,
-        size:        card.querySelector('.size-select').value,
-        sugar:       card.querySelector('.sugar-select').value
-    };
- 
-    cart.push(item);
-    console.log('Added to cart:', item);
-    console.log('Cart now:', cart);
- 
-    updateCartBadge();
-    showToast(item.productName + ' added to cart');
+
+function addCardToCart(card) {
+    const sizeSelect  = card.querySelector('.size-select');
+    const sugarSelect = card.querySelector('.sugar-select');
+
+    const size  = sizeSelect.options[sizeSelect.selectedIndex].text.trim();   // e.g. "Medium 16oz"
+    const sugar = sugarSelect.value;                                          // e.g. "50%"
+
+    addToCart({   // this function comes from cart.js
+        id:    card.dataset.productId + '|' + size + '|' + sugar,   // same drink + same options = same item
+        name:  card.dataset.productName,
+        price: Number(card.dataset.price),
+        image: card.dataset.image,
+        size:  size,
+        sugar: sugar
+    });
+
+    showToast(card.dataset.productName + ' added to cart');
 }
- 
-function updateCartBadge() {
-    cartCount.textContent = cart.length;
-    cartCount.hidden = cart.length === 0;
-}
- 
+
 function showToast(message) {
     toast.textContent = message;
     toast.classList.add('is-visible');
- 
+
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () {
         toast.classList.remove('is-visible');

@@ -4,10 +4,10 @@
 
         <nav aria-label="Main navigation">
             <ul class="nav-links">
-                <li><a href="#menu">Menu</a></li>
+                <li><a href="index.php#menu">Menu</a></li>
                 <li><a href="#">My Orders</a></li>
                 <li>
-                    <a href="#" class="icon-link cart-link" aria-label="Cart">
+                    <a href="cart.php" class="icon-link cart-link" aria-label="Cart">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="9" cy="20" r="1.4" />

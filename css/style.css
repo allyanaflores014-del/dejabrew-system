@@ -633,3 +633,4 @@ button { cursor: pointer; }
     .product-grid { grid-template-columns: 1fr; }
 }
  
+.cart-count[hidden] { display: none; }

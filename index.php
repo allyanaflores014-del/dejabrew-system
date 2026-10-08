@@ -89,8 +89,11 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
     <!-- Small message that appears when something is added to the cart -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script src="js/script.js"></script>
-    <script src="js/scroll-story.js"></script>
+    <!-- <script src="js/script.js"></script>
+    <script src="js/scroll-story.js"></script> -->
+    <script src="js/cart.js"></script>
+<script src="js/script.js"></script>
+<script src="js/scroll-story.js"></script>
 </body>
 
 </html>
