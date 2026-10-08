@@ -1,0 +1,636 @@
+/* =====================================================
+   DejaBrew - style.css
+   1. Variables & base
+   2. Navbar
+   3. Hero (spotlight effect)
+   4. Menu: toolbar
+   5. Product grid & card (hover, flip)
+   6. Card front details
+   7. Card back
+   8. Toast & utilities
+   9. Responsive
+   ===================================================== */
+ 
+ 
+/* ---------- 1. Variables & base ---------- */
+:root {
+    --cream:   #f9f1e6;   /* page background */
+    --white:   #ffffff;
+    --ink:     #24160f;   /* dark brown, almost black */
+    --brown:   #a8764c;   /* active filter pill, accents */
+    --tan:     #dfc4ae;   /* card background while hovered */
+    --caramel: #b07a50;   /* card back */
+    --shadow:  0 6px 18px rgba(60, 35, 15, 0.12);
+ 
+    --font-body:   'Poppins', system-ui, sans-serif;
+    --font-script: 'Allura', 'Brush Script MT', cursive;
+    --font-logo:   'Playfair Display', Georgia, serif;
+ 
+    --card-radius: 22px;
+}
+ 
+* { box-sizing: border-box; margin: 0; }
+ 
+html { scroll-behavior: smooth; }
+ 
+body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.5;
+}
+ 
+img { display: block; max-width: 100%; }
+ 
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+ 
+:focus-visible { outline: 2px solid var(--brown); outline-offset: 2px; }
+ 
+[hidden] { display: none !important; }
+ 
+ 
+/* ---------- 2. Navbar ---------- */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--white);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+ 
+.navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px clamp(16px, 4vw, 48px);
+}
+ 
+.logo {
+    font-family: var(--font-logo);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+}
+ 
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 2.5vw, 28px);
+    list-style: none;
+    padding: 0;
+}
+ 
+.nav-links a {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+ 
+.nav-links a:hover { color: var(--brown); }
+ 
+.icon-link { display: inline-flex; position: relative; }
+ 
+.cart-count {
+    position: absolute;
+    top: -9px;
+    right: -11px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--brown);
+    color: var(--white);
+    font-size: 0.65rem;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+}
+ 
+ 
+/* ---------- 3. Hero ---------- */
+.hero {
+    position: relative;
+    isolation: isolate;               /* keeps the overlay inside the hero */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: clamp(420px, 56vw, 660px);
+    padding-top: clamp(24px, 4vw, 56px);
+    background: #1b1410 url('../assets/hero-bg.jpg') center / cover no-repeat;
+    color: var(--white);
+    text-align: center;
+    overflow: hidden;
+}
+ 
+/* The dimming layer. The image file itself stays at normal brightness. */
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* dim layer + darker edges, so the cups blend into the scene */
+    background:
+        radial-gradient(ellipse at 50% 70%, transparent 35%, rgba(0, 0, 0, 0.35) 100%),
+        rgba(0, 0, 0, 0.55);
+    z-index: 0;
+}
+ 
+.hero-text { position: relative; z-index: 1; padding: 0 16px; }
+ 
+.hero-kicker {
+    font-size: clamp(1rem, 1.8vw, 1.35rem);
+    font-weight: 500;
+}
+ 
+.hero-sub {
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    opacity: 0.85;
+}
+ 
+.hero-title {
+    margin-top: clamp(20px, 4vw, 56px);
+    font-family: var(--font-script);
+    font-size: clamp(2.4rem, 6.4vw, 4.8rem);
+    line-height: 1.1;
+    min-height: 1.1em;                 /* keeps the layout steady while the text changes */
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+ 
+/* Added by JavaScript for a moment while the title changes */
+.hero-title.is-changing { opacity: 0; transform: translateY(6px); }
+ 
+.hero-cups {
+    position: relative;
+    z-index: 2;                        /* above the dim overlay */
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: auto;                  /* push cups to the bottom of the hero */
+    padding: 0 16px var(--cup-lift);   /* raise/lower the cups to sit on the surface */
+    --cup-lift: clamp(6px, 2.5vw, 34px);
+}
+ 
+/* Each cup is a button. Default = dim, hover = normal brightness. */
+.hero-cup {
+    width: clamp(90px, 19vw, 250px);
+    padding: 0;
+    border: 0;
+    background: none;
+    filter: brightness(0.45);          /* matches the overlay's darkness */
+    position: relative;
+    transform-origin: bottom center;
+    transition: filter 0.5s ease, transform 0.5s ease;
+}
+ 
+/* ---- Realism: contact shadow where the cup touches the surface ---- */
+.hero-cup::after {
+    content: '';
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: -3%;
+    height: 8%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, transparent 70%);
+    filter: blur(5px);
+    z-index: -1;                       /* behind the cup image */
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+ 
+ 
+.hero-cup--large { width: clamp(110px, 23vw, 300px); }
+ 
+.hero-cup + .hero-cup { margin-left: -2vw; }
+ 
+/* Soft shadow around the cup's edge so it doesn't look "pasted on" */
+.hero-cup img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.45));
+}
+ 
+.hero-cup:focus-visible {
+    outline-color: var(--white);
+    filter: brightness(1);
+    transform: scale(1.05);
+}
+ 
+/* Only use :hover on devices that really have hover (mouse/trackpad) */
+@media (hover: hover) {
+    .hero-cup:hover { filter: brightness(1); transform: scale(1.05); }
+}
+ 
+/* On touch screens, JavaScript adds .is-lit when a cup is tapped */
+.hero-cup.is-lit { filter: brightness(1); transform: scale(1.05); }
+ 
+ 
+/* ---------- 4. Menu toolbar ---------- */
+.menu {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 32px) 80px;
+}
+ 
+.menu-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+ 
+.menu-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 14px 0 22px;
+}
+ 
+.search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 200px;
+    max-width: 280px;
+    padding: 8px 12px;
+    background: var(--white);
+    border-radius: 6px;
+    color: #7a6556;
+}
+ 
+.search:focus-within { outline: 2px solid var(--brown); }
+ 
+.search input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 0.78rem;
+    color: var(--ink);
+}
+ 
+.filters { display: flex; flex-wrap: wrap; gap: 10px; }
+ 
+.filter-btn {
+    padding: 7px 22px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--white);
+    font-size: 0.74rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+ 
+.filter-btn:hover { background: var(--tan); }
+ 
+.filter-btn.is-active { background: var(--brown); color: var(--white); }
+ 
+ 
+/* ---------- 5. Product grid & card ---------- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: clamp(12px, 2vw, 24px);
+    row-gap: clamp(12px, 2vw, 24px);
+}
+ 
+/*
+ * The SLOT is only as tall as the card's CLOSED state, so rows sit close together.
+ * When a card opens it grows DOWNWARD past the slot and floats over the row
+ * below (see z-index below). The grid itself never moves.
+ * container-type lets children use "cqw" = 1% of the slot's width,
+ * so text and images scale with the card size.
+ */
+.product-slot {
+    position: relative;
+    aspect-ratio: 1 / 1.33;            /* closed card shape */
+    container-type: inline-size;
+}
+ 
+/* The slot of an open/flipped card goes on top of the slots after it */
+.product-slot:has(.is-open),
+.product-slot:has(.is-flipped) { z-index: 5; }
+ 
+.product-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    perspective: 1200px;               /* gives the flip its 3D depth */
+    transition: height 0.45s ease;
+}
+ 
+/* Open (hovered/tapped) or flipped = taller than the slot by the height of the size + sugar area */
+.product-card.is-open,
+.product-card.is-flipped { height: calc(100% + max(72px, 30cqw)); }
+ 
+/* Stronger shadow while it floats over the row below */
+.product-card.is-open .card-front,
+.product-card.is-flipped .card-back { box-shadow: 0 16px 32px rgba(60, 35, 15, 0.22); }
+ 
+/* The flip: this element rotates, the grid does not */
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+ 
+.product-card.is-flipped .card-inner { transform: rotateY(180deg); }
+ 
+.card-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 6cqw 6cqw 5cqw;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    backface-visibility: hidden;       /* hide a face while it points away */
+    -webkit-backface-visibility: hidden;
+}
+ 
+.card-front {
+    background: var(--white);
+    visibility: visible;
+    transition: background-color 0.35s ease, visibility 0s 0s;
+}
+ 
+.product-card.is-open .card-front { background: var(--tan); }
+ 
+.card-back {
+    background: var(--caramel);
+    transform: rotateY(180deg);
+    align-items: center;
+    text-align: center;
+    visibility: hidden;
+    transition: visibility 0s 0.35s;
+}
+ 
+/*
+ * Flip priority: when flipped, the front face is hidden (after half the flip)
+ * so its buttons and selects cannot be clicked or tabbed to.
+ */
+.product-card.is-flipped .card-front { visibility: hidden; transition: visibility 0s 0.35s; }
+.product-card.is-flipped .card-back  { visibility: visible; transition: visibility 0s 0s; }
+ 
+ 
+/* Pulse ring shown after clicking a hero cup (added/removed by JavaScript) */
+.product-card.is-highlighted .card-front { animation: card-pulse 1.8s ease-out; }
+ 
+@keyframes card-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(168, 118, 76, 0.85), var(--shadow); }
+    70%  { box-shadow: 0 0 0 18px rgba(168, 118, 76, 0), var(--shadow); }
+    100% { box-shadow: var(--shadow); }
+}
+ 
+ 
+/* ---------- 6. Card front details ---------- */
+.card-title { text-align: center; line-height: 1; font-weight: 400; }
+ 
+/* Script word sits on top of the bold name, slightly overlapping it */
+.title-script {
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin-bottom: -5.5cqw;
+    font-family: var(--font-script);
+    font-size: 14cqw;
+    line-height: 1;
+}
+ 
+.title-main {
+    display: block;
+    font-size: 10.5cqw;
+    font-weight: 500;
+    line-height: 1.1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+ 
+/* Fixed size, so the cup does not change size when the card grows */
+.card-image {
+    position: relative;
+    flex: none;
+    height: 76cqw;
+    margin-top: 2cqw;
+}
+ 
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+ 
+.icon-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: rgba(36, 22, 15, 0.55);
+    transition: color 0.2s, transform 0.2s;
+}
+ 
+.icon-btn:hover { color: var(--ink); transform: scale(1.12); }
+ 
+.info-btn { position: absolute; left: -4px; bottom: -4px; }
+ 
+/* Size + Sugar: collapsed to 0 height until the card is open */
+.card-options {
+    display: grid;
+    grid-template-rows: 0fr;
+    margin-top: auto;                  /* keeps the add button pinned to the bottom */
+    opacity: 0;
+    visibility: hidden;                /* closed controls can't be tabbed to */
+    transition: grid-template-rows 0.4s ease, opacity 0.3s ease, visibility 0s 0.4s;
+}
+ 
+.product-card.is-open .card-options {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+    transition: grid-template-rows 0.4s ease, opacity 0.3s ease 0.1s, visibility 0s 0s;
+}
+ 
+.card-options-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;
+    overflow: hidden;
+}
+ 
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: max(28px, 13cqw);
+    padding: 0 8px 0 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.6);
+    font-size: max(0.68rem, 4.4cqw);
+}
+ 
+.option:focus-within { outline: 2px solid var(--brown); outline-offset: -2px; }
+ 
+.option label { font-weight: 500; }
+ 
+.option select {
+    max-width: 68%;
+    padding: 2px 16px 2px 4px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2324160f' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 2px center / 9px;
+    font-size: inherit;
+    text-align: right;
+    appearance: none;
+    -webkit-appearance: none;
+}
+ 
+.option select:focus-visible { outline: none; }
+ 
+.card-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 3cqw;
+}
+ 
+/* Small round "+" by default; grows into "+ Add to Cart" when open */
+.add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: width 0.4s ease, background-color 0.2s;
+}
+ 
+.add-btn:hover { background: #4a2e20; }
+ 
+.add-btn-plus { font-size: 1.25rem; line-height: 1; }
+ 
+.add-btn-label {
+    max-width: 0;
+    opacity: 0;
+    transition: max-width 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+}
+ 
+.product-card.is-open .add-btn { width: 100%; }
+ 
+.product-card.is-open .add-btn-label {
+    max-width: 120px;
+    margin-left: 8px;
+    opacity: 1;
+}
+ 
+ 
+/* ---------- 7. Card back ---------- */
+.back-image {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    margin: 2cqw 0 3cqw;
+    object-fit: contain;
+    /* the cup fades out at the bottom, like the Figma */
+    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+}
+ 
+.back-description {
+    font-size: max(0.75rem, 5.4cqw);
+    line-height: 1.45;
+}
+ 
+.back-footer {
+    display: flex;
+    align-self: stretch;
+    margin-top: 3cqw;
+}
+ 
+.back-btn { margin-left: -4px; margin-bottom: -4px; }
+ 
+ 
+/* ---------- 8. Toast & utilities ---------- */
+.no-results {
+    padding: 40px 0;
+    text-align: center;
+    color: #7a6556;
+}
+ 
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    z-index: 100;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 0.85rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+ 
+.toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+ 
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+ 
+@media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; }
+    .product-card.is-highlighted .card-front { animation: none; outline: 3px solid var(--brown); }
+}
+ 
+ 
+/* ---------- 9. Responsive ---------- */
+ 
+/* Tablet: 3 columns */
+@media (max-width: 1000px) {
+    .product-grid { grid-template-columns: repeat(3, 1fr); }
+}
+ 
+/* Mobile: 2 columns, slightly taller slots because the cards are narrower */
+@media (max-width: 700px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+ 
+    .product-slot { aspect-ratio: 1 / 1.37; }
+ 
+    .navbar-inner { padding: 12px 16px; }
+    .logo { font-size: 1.2rem; }
+ 
+    .search { max-width: none; flex-basis: 100%; }
+    .filter-btn { padding: 7px 16px; }
+}
+ 
+/* Very small phones: 1 column */
+@media (max-width: 340px) {
+    .product-grid { grid-template-columns: 1fr; }
+}
+ 
+.cart-count[hidden] { display: none; }

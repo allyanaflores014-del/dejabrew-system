@@ -1,0 +1,155 @@
+/* =====================================================
+   scroll-story.css - cinematic scroll section
+   ===================================================== */
+ 
+/* Mobile browsers: 100svh = the screen height WITH the address bar showing */
+:root { --vh: 100vh; }
+@supports (height: 100svh) { :root { --vh: 100svh; } }
+ 
+/*
+ * The section is TALLER than the screen on purpose.
+ * Extra height = the distance you scroll while the stage stays pinned.
+ * stage height x (slides + 1)  ->  you scroll "slides" screens of distance.
+ * --nav-h and --slide-count are also set by JavaScript (script knows the real values).
+ */
+.scroll-story {
+    --nav-h: 56px;
+    --slide-count: 2;
+    position: relative;
+    height: calc((var(--vh) - var(--nav-h)) * (var(--slide-count) + 2));
+    background: #2a0f08;
+}
+ 
+/* The pinned window. It sticks just under the navbar. */
+.story-stage {
+    position: sticky;
+    top: var(--nav-h);
+    height: calc(var(--vh) - var(--nav-h));
+    overflow: hidden;
+}
+ 
+/* All slides are stacked on top of each other. JS fades them in and out. */
+.story-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;       /* hidden slides can't be clicked or tabbed to */
+}
+ 
+.story-slide:first-child { opacity: 1; visibility: visible; }
+ 
+.story-slide--cup { background: #b07a50; }
+.story-slide--cta { background: #2a0f08; }
+ 
+/* The layer that zooms. JS sets transform: scale(...) on it. */
+.story-media {
+    position: absolute;
+    inset: 0;
+    transform-origin: center center;
+}
+ 
+/* The zoom aims at the middle of the coffee. Nudge the % if your cup is off-center. */
+.story-slide--cup .story-media { transform-origin: 50% 48%; }
+ 
+.story-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;   /* keeps the cup in the middle on tall/narrow screens */
+}
+ 
+/* ---------- Slide 2 ---------- */
+.story-cup {
+    position: absolute;
+    rotate: -3deg;
+    left: clamp(8px, 6vw, 96px);
+    bottom: 0;
+    height: 92%;
+    width: auto;
+    max-width: 48%;
+    object-fit: contain;
+    object-position: bottom;
+    filter: drop-shadow(0 20px 24px rgba(0, 0, 0, 0.45));
+    transform: rotate(-3deg);
+}
+
+ 
+/* JS fades and nudges this layer. Layout is done with flexbox. */
+.story-content {
+    
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 6vw 0 52%;
+    will-change: transform;
+}
+ 
+.story-heading {
+    font-size: clamp(1.7rem, 4.4vw, 3.6rem);
+    font-weight: 600;
+    line-height: 1.12;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+ 
+.story-heading-line { display: block; }
+ 
+.story-heading-accent {
+    color: #b98a55;
+    letter-spacing: 0.12em;
+}
+ 
+.story-btn {
+    margin-top: clamp(16px, 2.4vw, 28px);
+    padding: 9px 26px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--ink);
+    font-size: clamp(0.78rem, 1.1vw, 0.95rem);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.25s, transform 0.25s;
+}
+ 
+.story-btn:hover { background: var(--tan); transform: translateY(-2px); }
+.story-btn:focus-visible { outline-color: #ffffff; outline-offset: 4px; }
+ 
+/* ---------- Mobile: cup on top, text underneath ---------- */
+@media (max-width: 700px) {
+    .story-cup {
+        left: 50%;
+        transform: translateX(-50%);
+        object-position: center bottom;
+        height: 58%;
+        max-width: 80%;
+        bottom: auto;
+        top: 4%;
+    }
+ 
+    .story-content {
+        justify-content: flex-end;
+        align-items: center;
+        text-align: center;
+        padding: 0 24px 9%;
+    }
+}
+ 
+/* ---------- Reduced motion: no pinning, no zoom, slides just stack ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .scroll-story { height: auto; }
+ 
+    .story-stage { position: static; height: auto; overflow: visible; }
+ 
+    .story-slide {
+        position: relative;
+        inset: auto;
+        height: var(--vh);
+        opacity: 1;
+        visibility: visible;
+        overflow: hidden;
+    }
+}
+ 

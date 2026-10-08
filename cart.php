@@ -1,7 +1,22 @@
-<?php
-$pageCss = 'cart.css';   
-include 'includes/header.php';
-?>
+<?php include __DIR__ . '/includes/header.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DejaBrew | Cart</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+
+<body>
+
 
 <main class="cart-page">
 
@@ -10,7 +25,7 @@ include 'includes/header.php';
         <div class="empty-illustration">☕</div>
         <h2>Your cart is empty</h2>
         <p>Looks like you haven't added anything yet.<br>Go find your favorite drink!</p>
-        <a href="menu.php" class="btn btn-primary">Explore Menu →</a>
+        <a href="index.php#menu" class="btn btn-primary">Explore Menu →</a>
     </section>
 
     <!-- STATE 2: CART WITH ITEMS -->
@@ -18,7 +33,7 @@ include 'includes/header.php';
 
         <!-- LEFT SIDE: cart items -->
         <div class="cart-left">
-            <a href="menu.php" class="back-link">← Back to Menu</a>
+            <a href="index.php#menu" class="back-link">← Back to Menu</a>
             <h1>Your Cart</h1>
             <p class="cart-subtitle">Review your items before proceeding to checkout.</p>
 
@@ -72,13 +87,6 @@ include 'includes/header.php';
     </section>
 
 </main>
-
-<!-- TEMPORARY: test buttons. Delete this whole block when the teammate's menu is connected. -->
-<div class="test-buttons" style="padding: 10px 40px; background: #fff3cd;">
-    <strong>TEST:</strong>
-    <button class="add-to-cart-btn" data-id="1" data-name="Iced Caramel Macchiato" data-price="170" data-image="assets/icecaramel.png">Add Macchiato</button>
-    <button class="add-to-cart-btn" data-id="2" data-name="Iced Americano" data-price="120" data-image="assets/icecaramel.png">Add Americano</button>
-</div>
 
 <script src="js/cart.js"></script>
 </body>

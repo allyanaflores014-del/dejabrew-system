@@ -10,11 +10,23 @@ function saveCart(cart) {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+// Makes text safe to put inside HTML
+function escapeHtml(text) {
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 
 // ========== 2. ADD TO CART ==========
+// product = { id, name, price, image, size, sugar }
+// "id" already includes the size and sugar, so different options = different item.
 function addToCart(product) {
     const cart = getCart();
-    const existingItem = cart.find(item => item.id === product.id);
+    const existingItem = cart.find(item => String(item.id) === String(product.id));
 
     if (existingItem) {
         existingItem.quantity += 1;
@@ -30,7 +42,7 @@ function addToCart(product) {
 // ========== 3. CHANGE QUANTITY ==========
 function changeQuantity(id, change) {
     const cart = getCart();
-    const item = cart.find(cartItem => cartItem.id === id);
+    const item = cart.find(cartItem => String(cartItem.id) === String(id));
     if (!item) return;
 
     if (item.quantity + change >= 1) {
@@ -45,7 +57,7 @@ function changeQuantity(id, change) {
 // ========== 4. REMOVE ITEM ==========
 function removeItem(id) {
     const cart = getCart();
-    const updatedCart = cart.filter(item => item.id !== id);
+    const updatedCart = cart.filter(item => String(item.id) !== String(id));
 
     saveCart(updatedCart);
     renderCart();
@@ -234,7 +246,7 @@ function handleCheckout() {
 
     const pickup = pickupField.value;
 
-    // 0. Is the shop still accepting orders today? (NEW)
+    // 0. Is the shop still accepting orders today?
     const rightNow = new Date();
     const rightNowMinutes = rightNow.getHours() * 60 + rightNow.getMinutes();
     if (rightNowMinutes + PREP_MINUTES > timeToMinutes(STORE_CLOSE)) {
@@ -270,10 +282,28 @@ function handleCheckout() {
 }
 
 
-// ========== 10. DISPLAY THE CART ITEMS ==========
+// ========== 10. CART ICON BADGE ==========
+// Shows the total number of drinks on the cart icon in the navbar
+function updateCartCount() {
+    const badge = document.getElementById('cart-count');
+    if (!badge) return;
+
+    let total = 0;
+    getCart().forEach(function (item) {
+        total += item.quantity;
+    });
+
+    badge.textContent = total;
+    badge.hidden = (total === 0);
+}
+
+
+// ========== 11. DISPLAY THE CART ITEMS ==========
 function renderCart() {
+    updateCartCount();   // works on every page that has the navbar
+
     const container = document.getElementById('cart-items');
-    if (!container) return;
+    if (!container) return;   // not the cart page, so stop here
 
     const cart = getCart();
 
@@ -293,20 +323,26 @@ function renderCart() {
     container.innerHTML = '';
 
     cart.forEach(function (item) {
+        // Show size and sugar only if the item has them
+        const options = item.size
+            ? `<p class="item-options">${escapeHtml(item.size)} · ${escapeHtml(item.sugar)} sugar</p>`
+            : '';
+
         container.innerHTML += `
             <div class="cart-item">
-                <img src="${item.image}" alt="${item.name}">
+                <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
                 <div class="item-info">
-                    <p class="item-name">${item.name}</p>
+                    <p class="item-name">${escapeHtml(item.name)}</p>
+                    ${options}
                     <p class="item-price">₱${item.price}</p>
                 </div>
                 <div class="item-actions">
                     <div class="quantity-controls">
-                        <button class="qty-btn" data-id="${item.id}" data-change="-1">−</button>
+                        <button class="qty-btn" data-id="${escapeHtml(item.id)}" data-change="-1">−</button>
                         <span>${item.quantity}</span>
-                        <button class="qty-btn" data-id="${item.id}" data-change="1">+</button>
+                        <button class="qty-btn" data-id="${escapeHtml(item.id)}" data-change="1">+</button>
                     </div>
-                    <button class="remove-btn" data-id="${item.id}">Remove</button>
+                    <button class="remove-btn" data-id="${escapeHtml(item.id)}">Remove</button>
                 </div>
             </div>
         `;
@@ -316,32 +352,20 @@ function renderCart() {
 }
 
 
-// ========== 11. BUTTON CLICKS ==========
+// ========== 12. BUTTON CLICKS ==========
 document.addEventListener('click', function (event) {
-
-    // "Add to Cart" buttons
-    const addButton = event.target.closest('.add-to-cart-btn');
-    if (addButton) {
-        addToCart({
-            id: Number(addButton.dataset.id),
-            name: addButton.dataset.name,
-            price: Number(addButton.dataset.price),
-            image: addButton.dataset.image
-        });
-        return;
-    }
 
     // + and − buttons
     const qtyButton = event.target.closest('.qty-btn');
     if (qtyButton) {
-        changeQuantity(Number(qtyButton.dataset.id), Number(qtyButton.dataset.change));
+        changeQuantity(qtyButton.dataset.id, Number(qtyButton.dataset.change));
         return;
     }
 
     // Remove buttons
     const removeButton = event.target.closest('.remove-btn');
     if (removeButton) {
-        removeItem(Number(removeButton.dataset.id));
+        removeItem(removeButton.dataset.id);
         return;
     }
 
@@ -358,6 +382,6 @@ document.addEventListener('click', function (event) {
 });
 
 
-// ========== 12. WHEN THE PAGE LOADS ==========
+// ========== 13. WHEN THE PAGE LOADS ==========
 loadOrderDetails();
 renderCart();
