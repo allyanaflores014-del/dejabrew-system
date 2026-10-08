@@ -1,0 +1,439 @@
+/* ========== 1. COLORS & BASIC SETUP ========== */
+/* Variables: we define colors ONCE here, then reuse them with var(--name).
+   To change the theme later, you only edit these lines. */
+:root {
+    --cream: #f8f3ea;
+    --white: #ffffff;
+    --caramel: #b07a4b;
+    --caramel-dark: #96663c;
+    --espresso: #2b1b14;
+    --text-dark: #2b1b14;
+    --text-light: #7a6a5f;
+    --green: #7ddc7a;
+}
+
+/* Reset: removes the browser's default spacing so we start clean */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* makes width/padding easier to predict */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+}
+
+h1, h2 {
+    font-family: 'Playfair Display', serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* ========== 2. NAVBAR ========== */
+.navbar {
+    background-color: var(--white);
+    display: flex;                  /* puts logo and links side by side */
+    justify-content: space-between; /* logo on the left, links on the right */
+    align-items: center;
+    padding: 16px 40px;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: var(--caramel);
+}
+
+
+/* ========== 3. BUTTONS ========== */
+.btn {
+    display: inline-block;
+    border: none;
+    border-radius: 999px; /* fully rounded "pill" shape */
+    padding: 12px 28px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--caramel);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: var(--caramel-dark);
+}
+
+
+/* ========== 4. EMPTY CART STATE ========== */
+.empty-cart {
+    display: flex;
+    flex-direction: column; /* stack items top to bottom */
+    align-items: center;    /* center horizontally */
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-illustration {
+    font-size: 7rem; /* big emoji placeholder until we have a real illustration */
+    margin-bottom: 20px;
+}
+
+.empty-cart h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.empty-cart p {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+
+/* ========== 5. CART WITH ITEMS (LEFT SIDE) ========== */
+.cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px; /* left takes the rest, right is 380px wide */
+    gap: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.back-link {
+    font-size: 0.75rem;
+    color: var(--caramel);
+}
+
+.cart-left h1 {
+    font-size: 1.8rem;
+    margin-top: 16px;
+}
+
+.cart-subtitle {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    margin: 6px 0 24px;
+}
+
+/* One cart item card (JavaScript will create these in Step 5) */
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: var(--white);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(43, 27, 20, 0.12);
+}
+
+.cart-item img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover; /* crops the photo neatly instead of stretching it */
+    border-radius: 10px;
+    background-color: var(--cream);
+}
+
+.item-info {
+    flex: 1; /* takes all the leftover space, pushing price/buttons right */
+}
+
+.item-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.item-price {
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-controls button {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--caramel);
+    background: var(--white);
+    color: var(--caramel);
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.quantity-controls button:hover {
+    background-color: var(--caramel);
+    color: var(--white);
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #b94a48;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+
+/* ========== 6. ORDER SUMMARY (RIGHT SIDE) ========== */
+.order-summary {
+    background-color: var(--espresso);
+    color: var(--white);
+    border-radius: 40px 40px 0 0; /* rounded top corners, like the reference */
+    padding: 32px 28px;
+    align-self: start; /* card is only as tall as its content */
+}
+
+.order-summary h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+}
+
+.order-summary label {
+    display: block;
+    font-size: 0.8rem;
+    margin: 14px 0 6px;
+}
+
+.order-summary input,
+.order-summary select,
+.order-summary textarea {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--caramel);
+    border-radius: 10px;
+    color: var(--white);
+    padding: 10px 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+}
+
+.order-summary select option {
+    color: var(--text-dark); /* so dropdown options are readable */
+}
+
+.order-summary textarea {
+    resize: none;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-top: 14px;
+}
+
+.total-row {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 14px;
+    margin-bottom: 20px;
+}
+
+.order-summary .btn {
+    width: 100%;
+}
+
+
+/* Wrapper that stacks quantity controls and the Remove button */
+.item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+/* ========== 8. VOUCHER & CHECKOUT MESSAGES ========== */
+.voucher-row {
+    display: flex;
+    gap: 8px;
+}
+
+.voucher-row input {
+    flex: 1;                 /* input takes the leftover space */
+    text-transform: uppercase;
+}
+
+/* Keep the Apply button small (the general rule makes buttons full width) */
+.voucher-row .btn {
+    width: auto;
+    padding: 10px 18px;
+}
+
+.voucher-message {
+    font-size: 0.75rem;
+    margin-top: 8px;
+    min-height: 1em;
+}
+
+.voucher-message.success {
+    display: inline-block;
+    background-color: var(--green);
+    color: var(--espresso);
+    border-radius: 999px;
+    padding: 4px 12px;
+}
+
+.voucher-message.warning {
+    color: #f0c27b;
+}
+
+.voucher-message.error {
+    color: #ff9c9c;
+}
+
+.checkout-error {
+    color: #ff9c9c;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-bottom: 8px;
+    min-height: 1em;
+}
+
+/* ========== 9. RESPONSIVE DESIGN ========== */
+
+/* ----- TABLET: screens 900px wide or smaller ----- */
+@media (max-width: 900px) {
+
+    /* One column: cart items on top, Order Summary below */
+    .cart-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    /* The card no longer sits on the right edge, so round all its corners */
+    .order-summary {
+        border-radius: 30px;
+        max-width: 560px;
+        width: 100%;
+        margin: 0 auto;   /* center it */
+    }
+}
+
+
+/* ----- MOBILE: screens 600px wide or smaller ----- */
+@media (max-width: 600px) {
+
+    /* Navbar: less side spacing, smaller text */
+    .navbar {
+        padding: 12px 16px;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .nav-links {
+        gap: 14px;
+        font-size: 0.8rem;
+    }
+
+    /* Empty cart: smaller illustration and spacing */
+    .empty-cart {
+        padding: 50px 16px;
+    }
+
+    .empty-illustration {
+        font-size: 5rem;
+    }
+
+    .empty-cart h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Cart page: less side spacing */
+    .cart-layout {
+        padding: 24px 16px;
+    }
+
+    .cart-left h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Cart item card: image + info on top, buttons underneath */
+    .cart-item {
+        flex-wrap: wrap;   /* allow things to move to the next line */
+    }
+
+    .cart-item img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .item-actions {
+        width: 100%;                       /* take the whole bottom row */
+        flex-direction: row;               /* quantity on the left, Remove on the right */
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Order Summary: a bit tighter */
+    .order-summary {
+        padding: 24px 18px;
+        border-radius: 24px;
+    }
+}
+
+/* ========== 10. ICON FIXES ========== */
+
+/* Navbar icons: aligned and colored like the text */
+.nav-icon {
+    display: flex;
+    align-items: center;
+    color: var(--text-dark);
+}
+
+.nav-icon:hover {
+    color: var(--caramel);
+}
+
+/* Pickup time: make the clock icon white (it is black by default) */
+.order-summary input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Payment method: replace the default arrow with our own, placed neatly on the right */
+.order-summary select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 14px;
+    padding-right: 40px;   /* keeps long text from touching the arrow */
+}
