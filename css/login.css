@@ -1,0 +1,1093 @@
+/* =========================================================
+   DEJABREW LOGIN + SIGN-UP
+   Shared stylesheet
+   ========================================================= */
+
+:root {
+    --dark: #2c1f1b;
+    --cream: #fff9f0;
+    --tan: #b07d52;
+    --tan-hover: #9c6c44;
+    --white: #ffffff;
+    --placeholder: #9b8f88;
+    --error: #ffb4a2;
+
+    --header-height: clamp(48px, 5vw, 68px);
+}
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    font-family: "Poppins", sans-serif;
+    color: var(--white);
+    background: var(--dark);
+
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header {
+    position: relative;
+    z-index: 20;
+
+    width: 100%;
+    height: var(--header-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 clamp(24px, 3.8vw, 64px);
+
+    background: var(--white);
+    color: var(--dark);
+}
+
+.brand {
+    color: var(--dark);
+    text-decoration: none;
+
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.05rem, 1.45vw, 1.45rem);
+    line-height: 1;
+}
+
+.exit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    text-decoration: none;
+}
+
+.exit img {
+    display: block;
+
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+}
+
+/* =========================================================
+   MAIN STAGE
+   ========================================================= */
+
+.stage {
+    position: relative;
+    width: 100%;
+    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100dvh - var(--header-height));
+
+    overflow: hidden;
+
+    background: #e8e8e8;
+
+    z-index: 0;
+}
+
+
+/* =========================
+   VISUAL CONTAINER
+========================= */
+
+.visual {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    z-index: 3;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   TABLE
+   Layer 1
+========================= */
+
+.table {
+    position: absolute;
+
+    left: -1%;
+    bottom: -7%;
+
+    width: min(58vw, 620px);
+    height: auto;
+
+    z-index: 1;
+}
+
+
+/* =========================
+   CURVE
+   Layer 2
+========================= */
+
+.curve {
+    position: absolute;
+
+    left: 0;
+    top: -10%;
+
+    width: 100%;
+    height: auto;
+
+    display: block;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   DRINKS
+   Layer 4
+========================= */
+
+.drinks {
+    position: absolute;
+
+    left: 5%;
+    bottom: 5%;
+
+    width: min(48vw, 6000px);
+    height: auto;
+
+    z-index: 4;
+}
+
+
+/* =========================
+   FORM
+   Layer 5
+========================= */
+
+.panel {
+    position: relative;
+
+    z-index: 5;
+
+    width: min(360px, 78%);
+
+    margin-left: auto;
+    margin-right: 15%;
+    margin-top: 4%;
+
+    align-self: center;
+
+    padding: 24px 0 28px;
+
+    text-align: center;
+}
+
+/* =========================================================
+   DEJABREW DECORATIVE LOGO
+   ========================================================= */
+
+.logo {
+    display: block;
+
+    width: clamp(38px, 3.5vw, 54px);
+    height: auto;
+
+    margin: 0 auto 9px;
+}
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+h1 {
+    margin: 0;
+
+    font-family: "DM Serif Display", serif;
+    font-weight: 400;
+
+    font-size: clamp(1.45rem, 2vw, 2rem);
+    line-height: 1.15;
+
+    color: var(--white);
+}
+
+.subtitle {
+    margin-top: 5px;
+
+    font-family: "DM Serif Display", serif;
+
+    font-size: clamp(0.78rem, 0.9vw, 0.95rem);
+    line-height: 1.3;
+
+    color: var(--white);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+form {
+    width: 100%;
+
+    margin-top: clamp(18px, 2vw, 24px);
+
+    text-align: left;
+}
+
+.field {
+    width: 100%;
+
+    margin-bottom: clamp(10px, 1.2vw, 15px);
+}
+
+label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--white);
+
+    font-size: clamp(0.72rem, 0.82vw, 0.88rem);
+    font-weight: 500;
+
+    line-height: 1.25;
+}
+
+/* =========================================================
+   INPUT WRAPPER
+   ========================================================= */
+
+.input-wrap {
+    position: relative;
+
+    width: 100%;
+}
+
+/* =========================================================
+   INPUT ICON
+   ========================================================= */
+
+.input-wrap::before {
+    content: "";
+
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    width: 17px;
+    height: 17px;
+
+    transform: translateY(-50%);
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+/* User icon */
+.icon-user::before {
+    /*
+       Keep the existing inline user icon if
+       user.svg does not exist.
+    */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%238a7a70' d='M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.4 0-8 2.2-8 5v3h16v-3c0-2.8-3.6-5-8-5z'/%3E%3C/svg%3E");
+}
+
+/* Mail icon */
+.icon-mail::before {
+    background-image: url("../login_assets/mail.svg");
+}
+
+/* Lock icon */
+.icon-lock::before {
+    background-image: url("../login_assets/lock.svg");
+}
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+input {
+    display: block;
+
+    width: 100%;
+    height: clamp(38px, 3vw, 44px);
+
+    border: 0;
+    border-radius: 4px;
+
+    padding: 0 14px 0 44px;
+
+    background: var(--cream);
+
+    color: var(--dark);
+
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.74rem, 0.82vw, 0.9rem);
+
+    outline: none;
+
+    appearance: none;
+}
+
+input.has-toggle {
+    padding-right: 50px;
+}
+
+input::placeholder {
+    color: var(--placeholder);
+    opacity: 1;
+}
+
+/* =========================================================
+   AUTOFILL FIX
+   ========================================================= */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 100px var(--cream) inset !important;
+    -webkit-text-fill-color: var(--dark) !important;
+
+    caret-color: var(--dark);
+}
+
+/* =========================================================
+   INPUT FOCUS
+   ========================================================= */
+
+input:focus {
+    outline: none;
+}
+
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid #f0c48f;
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   PASSWORD TOGGLE
+   ========================================================= */
+
+.toggle {
+    position: absolute;
+
+    right: 7px;
+    top: 50%;
+
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transform: translateY(-50%);
+
+    padding: 5px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    z-index: 3;
+}
+
+.toggle:hover {
+    background: rgba(44, 31, 27, 0.06);
+}
+
+.toggle img {
+    display: block;
+
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+}
+
+/* =========================================================
+   ERROR MESSAGE
+   ========================================================= */
+
+.error {
+    min-height: 1.15em;
+
+    padding-top: 3px;
+
+    color: var(--error);
+
+    font-size: 0.68rem;
+    line-height: 1.3;
+
+    text-align: left;
+}
+
+/* =========================================================
+   ALERT / SUCCESS
+   ========================================================= */
+
+.alert {
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 9px 12px;
+
+    border-radius: 4px;
+
+    font-size: 0.78rem;
+    line-height: 1.35;
+
+    text-align: left;
+}
+
+.success {
+    background: #e8f3e5;
+    color: #24421e;
+}
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.submit {
+    display: block;
+
+    width: 100%;
+    height: clamp(40px, 3.2vw, 46px);
+
+    margin-top: 3px;
+
+    padding: 0 16px;
+
+    border: 0;
+    border-radius: 4px;
+
+    background: var(--tan);
+    color: var(--white);
+
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.78rem, 0.88vw, 0.95rem);
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.1s ease;
+}
+
+.submit:hover {
+    background: var(--tan-hover);
+}
+
+.submit:active {
+    transform: translateY(1px);
+}
+
+/* =========================================================
+   LOGIN / SIGN-UP SWITCH
+   ========================================================= */
+
+.switch {
+    margin-top: 10px;
+
+    color: var(--white);
+
+    font-size: clamp(0.68rem, 0.78vw, 0.84rem);
+    line-height: 1.4;
+
+    text-align: center;
+}
+
+.switch a {
+    color: var(--white);
+
+    text-decoration: underline;
+}
+
+.switch a:hover {
+    opacity: 0.8;
+}
+
+/* =========================================================
+   DESKTOP HEIGHT ADJUSTMENT
+   Prevent form from becoming too tall
+   ========================================================= */
+
+@media (max-height: 700px) and (min-width: 901px) {
+
+    .panel {
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    .logo {
+        width: 42px;
+        margin-bottom: 5px;
+    }
+
+    h1 {
+        font-size: 1.55rem;
+    }
+
+    .subtitle {
+        font-size: 0.78rem;
+    }
+
+    form {
+        margin-top: 13px;
+    }
+
+    .field {
+        margin-bottom: 7px;
+    }
+
+    label {
+        margin-bottom: 3px;
+    }
+
+    input {
+        height: 36px;
+    }
+
+    .submit {
+        height: 38px;
+    }
+
+    .switch {
+        margin-top: 7px;
+    }
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .stage {
+        display: flex;
+        flex-direction: column;
+
+        min-height: auto;
+
+        overflow: hidden;
+    }
+
+    /* -------------------------
+       Visual section
+       ------------------------- */
+
+    .visual {
+        width: 100%;
+
+        height: clamp(280px, 55vw, 410px);
+        min-height: 280px;
+
+        flex-shrink: 0;
+
+        overflow: hidden;
+    }
+
+    .curve {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+        object-position: left bottom;
+    }
+
+    .table {
+        width: min(78vw, 540px);
+
+        left: 50%;
+        bottom: -8%;
+
+        transform: translateX(-50%);
+    }
+
+    .drinks {
+        width: min(64vw, 430px);
+
+        left: 50%;
+        bottom: 15%;
+
+        transform: translateX(-50%);
+    }
+
+    /* -------------------------
+       Form
+       ------------------------- */
+
+    .panel {
+        width: min(400px, calc(100% - 40px));
+
+        margin: 0 auto;
+
+        padding: 30px 0 45px;
+    }
+
+    .logo {
+        width: 48px;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    form {
+        margin-top: 20px;
+    }
+
+    input {
+        height: 42px;
+    }
+
+    .submit {
+        height: 43px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .site-header {
+        height: 54px;
+
+        padding: 0 20px;
+    }
+
+    .brand {
+        font-size: 1.15rem;
+    }
+
+    .exit {
+        width: 26px;
+        height: 26px;
+    }
+
+    .exit img {
+        width: 17px;
+        height: 17px;
+    }
+
+    /* -------------------------
+       Visual
+       ------------------------- */
+
+    .visual {
+        height: 285px;
+        min-height: 285px;
+    }
+
+    .curve {
+        width: 115%;
+        height: 100%;
+
+        left: -8%;
+
+        object-fit: cover;
+        object-position: left bottom;
+    }
+
+    .table {
+        width: 120%;
+
+        max-width: 500px;
+
+        left: 50%;
+        bottom: -8%;
+
+        transform: translateX(-50%);
+    }
+
+    .drinks {
+        width: 88%;
+
+        max-width: 390px;
+
+        left: 50%;
+        bottom: 15%;
+
+        transform: translateX(-50%);
+    }
+
+    /* -------------------------
+       Form
+       ------------------------- */
+
+    .panel {
+        width: calc(100% - 40px);
+
+        padding: 28px 0 40px;
+    }
+
+    .logo {
+        width: 44px;
+
+        margin-bottom: 7px;
+    }
+
+    h1 {
+        font-size: 1.55rem;
+    }
+
+    .subtitle {
+        font-size: 0.82rem;
+    }
+
+    form {
+        margin-top: 18px;
+    }
+
+    .field {
+        margin-bottom: 10px;
+    }
+
+    label {
+        font-size: 0.76rem;
+    }
+
+    input {
+        height: 42px;
+
+        font-size: 0.78rem;
+    }
+
+    .submit {
+        height: 44px;
+
+        font-size: 0.82rem;
+    }
+
+    .switch {
+        font-size: 0.72rem;
+    }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .visual {
+        height: 250px;
+        min-height: 250px;
+    }
+
+    .table {
+        width: 125%;
+        bottom: -9%;
+    }
+
+    .drinks {
+        width: 94%;
+        bottom: 14%;
+    }
+
+    .panel {
+        width: calc(100% - 32px);
+
+        padding-top: 24px;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    .subtitle {
+        font-size: 0.78rem;
+    }
+
+    input {
+        height: 40px;
+    }
+
+    .submit {
+        height: 42px;
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+    }
+}
+
+/* =========================================================
+   HEADER (navbar)
+   ========================================================= */
+
+.navbar {
+    position: relative;
+    z-index: 100;
+
+    width: 100%;
+    height: var(--header-height);
+
+    background: var(--white);
+    color: var(--dark);
+}
+
+.navbar-inner {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 clamp(24px, 3.8vw, 64px);
+}
+
+.navbar-logo {
+    color: var(--dark);
+    text-decoration: none;
+
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.05rem, 1.45vw, 1.45rem);
+    line-height: 1;
+}
+
+.nav-links {
+    list-style: none;
+
+    display: flex;
+    align-items: center;
+}
+
+.icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    color: var(--dark);
+    text-decoration: none;
+}
+
+.icon-link svg {
+    display: block;
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        height: 54px;
+    }
+
+    .navbar-inner {
+        padding: 0 20px;
+    }
+
+    .navbar-logo {
+        font-size: 1.15rem;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE FIXES
+   (keep this block at the very bottom of the file)
+   ========================================================= */
+
+/* ---------- Tablet + phone: image on top, form below ---------- */
+@media (max-width: 900px) {
+
+    /* dark background so the white form text is readable */
+    .stage {
+        background: var(--dark);
+    }
+
+    /* visual becomes a normal block that takes its own space
+       (it was still absolute, which made the form overlap the drinks) */
+    .visual {
+        position: relative;
+        inset: auto;
+
+        background: #e8e8e8;
+    }
+
+    .curve {
+        top: 0;
+    }
+}
+
+/* ---------- Small desktop / zoom 125%-150% ---------- */
+@media (min-width: 901px) and (max-width: 1100px) {
+
+    .drinks {
+        width: 42vw;
+        left: 3%;
+    }
+
+    .panel {
+        width: min(340px, 36vw);
+        margin-right: 6%;
+    }
+}
+
+/* ---------- Very wide screens / zoom 50% or below ----------
+   Everything scales with the screen width so the design keeps
+   the same proportions as the normal desktop view. */
+@media (min-width: 1700px) {
+
+    :root {
+        --header-height: 4vw;
+    }
+
+    /* header */
+    .navbar-inner {
+        padding: 0 3.76vw;
+    }
+
+    .navbar-logo {
+        font-size: 1.365vw;
+    }
+
+    .icon-link {
+        width: 1.65vw;
+        height: 1.65vw;
+    }
+
+    .icon-link svg {
+        width: 64%;
+        height: 64%;
+    }
+
+    /* images */
+    .table {
+        width: 36.5vw;
+    }
+
+    /* form */
+    .panel {
+        width: 21.18vw;
+        padding: 1.41vw 0 1.65vw;
+    }
+
+    .logo {
+        width: 3.18vw;
+        margin-bottom: 0.53vw;
+    }
+
+    h1 {
+        font-size: 1.88vw;
+    }
+
+    .subtitle {
+        font-size: 0.89vw;
+        margin-top: 0.3vw;
+    }
+
+    form {
+        margin-top: 1.41vw;
+    }
+
+    .field {
+        margin-bottom: 0.88vw;
+    }
+
+    label {
+        font-size: 0.83vw;
+        margin-bottom: 0.3vw;
+    }
+
+    input {
+        height: 2.59vw;
+        font-size: 0.85vw;
+        padding: 0 0.82vw 0 2.59vw;
+    }
+
+    input.has-toggle {
+        padding-right: 2.94vw;
+    }
+
+    .input-wrap::before {
+        left: 0.82vw;
+        width: 1vw;
+        height: 1vw;
+    }
+
+    .toggle {
+        right: 0.41vw;
+        width: 1.88vw;
+        height: 1.88vw;
+    }
+
+    .toggle img {
+        width: 1.06vw;
+        height: 1.06vw;
+    }
+
+    .error {
+        font-size: 0.64vw;
+    }
+
+    .alert {
+        font-size: 0.73vw;
+        padding: 0.53vw 0.71vw;
+    }
+
+    .submit {
+        height: 2.71vw;
+        font-size: 0.89vw;
+    }
+
+    .switch {
+        font-size: 0.79vw;
+        margin-top: 0.59vw;
+    }
+}
