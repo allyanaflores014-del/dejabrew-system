@@ -1,0 +1,87 @@
+/* =====================================================
+   notifications.css - popup messages on the home page
+   ===================================================== */
+ 
+.notif-stack {
+    --notif-icon-bg: #d9bda6;
+    position: fixed;
+    top: 72px;                         /* just under the sticky navbar */
+    right: 16px;
+    z-index: 90;                       /* above the page, below the cart toast (100) */
+    width: min(400px, calc(100vw - 24px));
+    pointer-events: none;              /* the empty area never blocks clicks */
+}
+ 
+.notif {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 40px 16px 16px;
+    border-radius: 14px;
+    background: var(--white);
+    box-shadow: 0 10px 30px rgba(36, 22, 15, 0.18);
+    pointer-events: auto;
+ 
+    /* hidden state: slightly to the right and transparent */
+    opacity: 0;
+    transform: translateX(28px);
+    transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+ 
+/* JavaScript adds .is-visible to slide it in, removes it to slide it out */
+.notif.is-visible { opacity: 1; transform: none; }
+ 
+.notif-icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--notif-icon-bg);
+    color: var(--brown);
+}
+ 
+.notif-title {
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.3;
+}
+ 
+.notif-text {
+    margin-top: 2px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #7a7a7a;
+}
+ 
+.notif-text strong { font-weight: 500; color: var(--caramel); }
+ 
+.notif-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--ink);
+    transition: background-color 0.2s;
+}
+ 
+.notif-close:hover { background: rgba(36, 22, 15, 0.08); }
+ 
+@media (max-width: 700px) {
+    .notif-stack { top: 64px; right: 12px; }
+    .notif-title { font-size: 0.95rem; }
+}
+ 
+/* Reduced motion: only fade, no sliding */
+@media (prefers-reduced-motion: reduce) {
+    .notif { transform: none; }
+}

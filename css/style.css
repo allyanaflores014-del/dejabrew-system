@@ -634,3 +634,212 @@ button { cursor: pointer; }
 }
  
 .cart-count[hidden] { display: none; }
+
+/* ---------- 1. Card hover: size, sugar, quantity, total ---------- */
+ 
+/* The open card needs a bit more room now (this replaces the old height rule) */
+.product-card.is-open,
+.product-card.is-flipped { height: calc(100% + max(88px, 34cqw)); }
+ 
+.card-options-inner { gap: 0; }
+ 
+/* Size + Sugar side by side. Padding on top = room for the floating labels. */
+.option-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-top: 7px;
+}
+ 
+.field { position: relative; }
+ 
+/* The label sits on the border of the select, like the Figma */
+.field label {
+    position: absolute;
+    top: -7px;
+    left: 10px;
+    z-index: 1;
+    padding: 0 4px;
+    background: var(--tan);
+    font-size: 0.62rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+ 
+.field select {
+    width: 100%;
+    height: max(34px, 13cqw);
+    padding: 0 22px 0 10px;
+    border: 1px solid rgba(36, 22, 15, 0.35);
+    border-radius: 12px;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2324160f' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 9px center / 9px;
+    font-size: max(0.7rem, 4.4cqw);
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+ 
+.field select:focus-visible { outline: 2px solid var(--brown); outline-offset: 1px; }
+ 
+/* Quantity on the left, total on the right */
+.qty-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+}
+ 
+.card-qty { display: flex; align-items: center; gap: 8px; }
+ 
+.card-qty-btn {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid rgba(36, 22, 15, 0.45);
+    border-radius: 50%;
+    background: transparent;
+    font-size: 1rem;
+    line-height: 1;
+    transition: background-color 0.2s;
+}
+ 
+.card-qty-btn:hover { background: rgba(36, 22, 15, 0.12); }
+ 
+.card-qty-value { min-width: 1.3ch; text-align: center; font-size: 0.8rem; }
+ 
+.card-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin: 0;
+    line-height: 1.25;
+    font-size: 0.65rem;
+}
+ 
+.card-total-value { font-size: 0.85rem; font-weight: 600; }
+ 
+/* Bigger tap targets on touch screens */
+@media (hover: none) {
+    .card-qty-btn { width: 30px; height: 30px; }
+}
+ 
+/* Narrow cards (phones, small tablets): stack Size and Sugar so the text fits */
+@container (max-width: 210px) {
+    .option-row { grid-template-columns: 1fr; gap: 10px; }
+ 
+    .product-card.is-open,
+    .product-card.is-flipped { height: calc(100% + max(130px, 56cqw)); }
+}
+ 
+ 
+/* ---------- 2. Back of the card is clickable ---------- */
+.card-back { cursor: pointer; }
+ 
+ 
+/* ---------- 3. "Made for Your Coffee Break" ---------- */
+.coffee-break {
+    padding: clamp(56px, 9vw, 110px) 16px clamp(80px, 14vw, 170px);
+    text-align: center;
+}
+ 
+.coffee-break-title {
+    font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+    font-weight: 400;
+}
+ 
+.coffee-break-text { font-size: clamp(0.72rem, 1.2vw, 0.85rem); }
+ 
+ 
+/* ---------- 4. New Series banner ---------- */
+.new-series {
+    padding: clamp(40px, 7vw, 90px) clamp(16px, 4vw, 32px) clamp(60px, 9vw, 120px);
+}
+ 
+.series-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 1000px;
+    min-height: clamp(220px, 30vw, 320px);
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 52px) clamp(24px, 6vw, 72px);
+    background: #b5b26e;
+    border-radius: clamp(20px, 3vw, 32px);
+    overflow: hidden;                  /* the cup is cropped by the rounded corners */
+}
+ 
+.series-text { position: relative; z-index: 1; width: 52%; }
+ 
+.series-heading { margin: 0; line-height: 1; }
+ 
+.series-kicker {
+    display: block;
+    font-size: clamp(1rem, 2.2vw, 1.5rem);
+    font-weight: 600;
+    color: #fffaf0;
+}
+ 
+.series-title {
+    display: block;
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--ink);
+}
+ 
+.series-name {
+    margin-top: clamp(10px, 2vw, 22px);
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    font-weight: 600;
+    color: var(--ink);
+}
+ 
+.series-desc {
+    max-width: 34ch;
+    font-size: clamp(0.7rem, 1.1vw, 0.82rem);
+    line-height: 1.5;
+    color: #fffaf0;
+}
+ 
+.series-btn {
+    margin-top: clamp(12px, 2vw, 20px);
+    padding: 7px 28px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 500;
+    transition: background-color 0.25s, transform 0.25s;
+}
+ 
+.series-btn:hover { background: var(--cream); transform: translateY(-2px); }
+ 
+.series-cup {
+    position: absolute;
+    right: clamp(8px, 7vw, 90px);
+    bottom: -8%;
+    height: 98%;
+    width: auto;
+    max-width: 44%;
+    object-fit: contain;
+    object-position: bottom;
+}
+ 
+@media (max-width: 700px) {
+    .series-card { flex-direction: column; align-items: flex-start; padding-bottom: 0; }
+    .series-text { width: 100%; }
+ 
+    /* cup goes under the text, bottom part cropped by the card */
+    .series-cup {
+        position: static;
+        align-self: center;
+        width: min(70%, 260px);
+        height: auto;
+        max-width: none;
+        margin: 18px 0 -10%;
+    }
+}
