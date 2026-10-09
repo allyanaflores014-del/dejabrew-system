@@ -1,0 +1,521 @@
+/* ========== 1. COLORS & BASE ========== */
+:root {
+    --cream: #f8f3ea;
+    --card: #fffaf3;
+    --white: #ffffff;
+    --espresso: #2b1b14;
+    --caramel: #b07a4b;
+    --caramel-dark: #96663c;
+    --text-dark: #2b1b14;
+    --text-light: #7a6a5f;
+    --border: #e3dccf;
+
+    /* Status colors */
+    --pending: #ffe66d;
+    --preparing: #f5b97a;
+    --completed: #7ddc7a;
+    --cancelled: #e8b4b0;
+
+    /* Column sizes of the order list (the header and every row share this) */
+    --orders-cols: 80px 1.4fr 1fr 1fr 1fr 110px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.staff-body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--cream);
+    color: var(--text-dark);
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Elements with the "hidden" attribute must really disappear,
+   even when our CSS gives them a display value */
+[hidden] {
+    display: none !important;
+}
+
+/* Hidden on screen but still readable by screen readers */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+
+/* ========== 2. OVERALL LAYOUT ========== */
+/* The shell is a grid:
+     row 1: top bar (full width)
+     row 2: sidebar (left) + main area (right) */
+.staff-shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+}
+
+.staff-topbar {
+    grid-column: 1 / -1;    /* spans both columns */
+    background-color: var(--white);
+    padding: 16px 40px;
+}
+
+.staff-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.staff-sidebar {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.staff-main {
+    grid-column: 2;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);   /* just the list, full width */
+    gap: 24px;
+    padding: 24px 28px;
+    align-items: start;
+    min-width: 0;
+}
+
+/* When an order is selected: list on the left, detail panel on the right */
+.staff-main.has-detail {
+    grid-template-columns: minmax(0, 1fr) 380px;
+}
+
+
+/* ========== 3. SIDEBAR ========== */
+.staff-sidebar {
+    background-color: var(--espresso);
+    color: var(--white);
+    border-top-right-radius: 36px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;   /* menu on top, account at the bottom */
+}
+
+.staff-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.staff-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.staff-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.staff-nav-link.is-active {
+    background-color: var(--caramel);
+}
+
+.staff-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 12px 0;
+}
+
+.staff-account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 16px;
+}
+
+.staff-account-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.staff-account-email {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+
+/* ========== 4. MIDDLE: HEADING, SEARCH, FILTERS, LIST ========== */
+.orders-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.orders-heading h1 {
+    font-size: 1.8rem;
+}
+
+.orders-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.order-search input {
+    width: 290px;
+    max-width: 100%;
+    padding: 10px 16px 10px 40px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--white);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-dark);
+    /* magnifying glass icon on the left */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a6a5f' stroke-width='2' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: 14px center;
+    background-size: 16px;
+}
+
+.order-search input:focus {
+    outline: 2px solid var(--caramel);
+    outline-offset: 1px;
+}
+
+.orders-card {
+    background-color: var(--card);
+    border-radius: 16px;
+    padding: 18px;
+}
+
+/* Filter buttons */
+.filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.filter-pill {
+    border: none;
+    border-radius: 999px;
+    background-color: #e9e4db;
+    color: var(--text-dark);
+    padding: 7px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.filter-pill:hover {
+    background-color: #ddd6ca;
+}
+
+.filter-pill.is-active {
+    background-color: var(--espresso);
+    color: var(--white);
+}
+
+/* Column titles */
+.orders-table-head {
+    display: grid;
+    grid-template-columns: var(--orders-cols);
+    background-color: #efeae1;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.72rem;
+    color: var(--text-light);
+}
+
+/* One order row (JavaScript creates these in Step 5) */
+.order-row {
+    display: grid;
+    grid-template-columns: var(--orders-cols);
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    background-color: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-dark);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.order-row:hover {
+    border-color: var(--caramel);
+}
+
+.order-row.is-selected {
+    background-color: #fdf3e7;
+    border-color: var(--espresso);
+}
+
+.row-id {
+    font-weight: 600;
+}
+
+.row-end {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.row-chevron {
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--text-light);
+}
+
+.no-orders {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    padding: 30px 0 10px;
+}
+
+/* Status badges (used in the list and in the detail panel) */
+.status-badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--espresso);
+    white-space: nowrap;
+}
+
+.status-pending   { background-color: var(--pending); }
+.status-preparing { background-color: var(--preparing); }
+.status-completed { background-color: var(--completed); }
+.status-cancelled { background-color: var(--cancelled); }
+
+
+/* ========== 5. RIGHT: ORDER DETAIL PANEL ========== */
+.order-detail {
+    background-color: var(--espresso);
+    color: var(--white);
+    border-radius: 16px;
+    padding: 22px 20px;
+}
+
+.detail-empty {
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    padding: 60px 10px;
+}
+
+.detail-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-top h2 {
+    font-size: 1.5rem;
+}
+
+.detail-date {
+    font-size: 0.72rem;
+    opacity: 0.75;
+    margin: 4px 0 14px;
+}
+
+/* Customer card */
+.detail-customer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--white);
+    color: var(--text-dark);
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.customer-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.customer-email {
+    font-size: 0.7rem;
+    color: var(--text-light);
+}
+
+.detail-heading {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 18px 0 8px;
+}
+
+/* Items list (JavaScript creates the rows in Step 6) */
+.detail-items {
+    background-color: var(--white);
+    color: var(--text-dark);
+    border-radius: 10px;
+    padding: 6px 12px;
+}
+
+.detail-item {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+}
+
+.detail-item + .detail-item {
+    border-top: 1px solid var(--border);
+}
+
+.detail-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: var(--cream);
+}
+
+.item-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.item-meta {
+    font-size: 0.65rem;
+    color: var(--text-light);
+}
+
+.item-end {
+    text-align: right;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.item-qty {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--text-light);
+}
+
+/* Subtotal, discount, total */
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    margin-top: 12px;
+}
+
+.detail-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--caramel);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-top: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+/* Payment method and order notes boxes */
+.detail-box {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+}
+
+/* Buttons */
+.detail-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.btn-status,
+.btn-cancel {
+    width: 100%;
+    border-radius: 999px;
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-status {
+    background-color: var(--caramel);
+    border: 1px solid var(--caramel);
+    color: var(--white);
+}
+
+.btn-status:hover {
+    background-color: var(--caramel-dark);
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid #e05c5c;
+    color: #ff8f8f;
+}
+
+.btn-cancel:hover {
+    background-color: #e05c5c;
+    color: var(--white);
+}
+
+/* If the items box has nothing inside, don't show an empty white bar */
+.detail-items:empty {
+    display: none;
+}
+
+/* Payment box: title line + small explanation line */
+.box-title {
+    font-weight: 600;
+    font-size: 0.78rem;
+}
+
+.box-sub {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: 2px;
+}

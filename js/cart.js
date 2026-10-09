@@ -118,7 +118,8 @@ function setText(id, text) {
     }
 }
 
-function updateSummary() {
+// NEW: does the math in ONE place, so the page and the order always agree
+function calculateTotals() {
     const cart = getCart();
 
     let subtotal = 0;
@@ -129,34 +130,47 @@ function updateSummary() {
         itemCount += item.quantity;
     });
 
-    // The discount comes from the saved voucher code
-    let discount = 0;
-    const message = document.getElementById('voucher-message');
     const code = localStorage.getItem(VOUCHER_KEY);
     const voucher = code ? VOUCHERS[code] : null;
 
-    if (voucher) {
-        if (subtotal >= voucher.minOrder) {
-            discount = Math.round(subtotal * voucher.rate);
-            if (message) {
-                message.textContent = '✔ Voucher applied: ' + voucher.label;
-                message.className = 'voucher-message success';
-            }
-        } else if (message) {
-            message.textContent = 'Add ' + formatPeso(voucher.minOrder - subtotal) + ' more to use ' + code + '.';
-            message.className = 'voucher-message warning';
-        }
-    } else if (message) {
-        message.textContent = '';
-        message.className = 'voucher-message';
+    // The discount only applies if the subtotal reaches the voucher's minimum
+    let discount = 0;
+    if (voucher && subtotal >= voucher.minOrder) {
+        discount = Math.round(subtotal * voucher.rate);
     }
 
-    const total = subtotal - discount;
+    return {
+        subtotal: subtotal,
+        itemCount: itemCount,
+        discount: discount,
+        total: subtotal - discount,
+        code: code,
+        voucher: voucher
+    };
+}
 
-    setText('item-count', '(' + itemCount + (itemCount === 1 ? ' item)' : ' items)'));
-    setText('subtotal', formatPeso(subtotal));
-    setText('discount', '-' + formatPeso(discount));
-    setText('total', formatPeso(total));
+function updateSummary() {
+    const totals = calculateTotals();
+    const message = document.getElementById('voucher-message');
+
+    // The message under the voucher box
+    if (message) {
+        if (totals.voucher && totals.subtotal >= totals.voucher.minOrder) {
+            message.textContent = '✔ Voucher applied: ' + totals.voucher.label;
+            message.className = 'voucher-message success';
+        } else if (totals.voucher) {
+            message.textContent = 'Add ' + formatPeso(totals.voucher.minOrder - totals.subtotal) + ' more to use ' + totals.code + '.';
+            message.className = 'voucher-message warning';
+        } else {
+            message.textContent = '';
+            message.className = 'voucher-message';
+        }
+    }
+
+    setText('item-count', '(' + totals.itemCount + (totals.itemCount === 1 ? ' item)' : ' items)'));
+    setText('subtotal', formatPeso(totals.subtotal));
+    setText('discount', '-' + formatPeso(totals.discount));
+    setText('total', formatPeso(totals.total));
 }
 
 
@@ -230,7 +244,69 @@ function formatTime(timeText) {
 }
 
 
-// ========== 9. CHECKOUT BUTTON ==========
+// ========== 9. PLACE THE ORDER (NEW) ==========
+
+// Until there is a login page, every order belongs to this sample customer.
+// When your team adds login, replace these two values with the logged-in user.
+const CURRENT_CUSTOMER = {
+    name: 'Jane Doe',
+    email: 'JaneDoe@gmail.com'
+};
+
+// Turns the cart into an order, saves it, and empties the cart.
+// Returns the new order (or null if the cart is empty).
+function placeOrder(pickupTime) {
+    const cart = getCart();
+    if (cart.length === 0) return null;
+
+    const totals = calculateTotals();
+    const noteField = document.getElementById('barista-note');
+
+    const order = {
+        id: getNextOrderId(),                       // from orders-data.js
+        customerName: CURRENT_CUSTOMER.name,
+        customerEmail: CURRENT_CUSTOMER.email,
+        createdAt: new Date().toISOString(),
+        pickupTime: pickupTime,
+        status: 'pending',
+        paymentMethod: 'Pay upon pickup',
+        note: noteField ? noteField.value.trim() : '',
+        voucherCode: totals.discount > 0 ? totals.code : '',
+        items: cart.map(function (item) {
+            return {
+                name: item.name,
+                size: item.size,
+                sugar: item.sugar,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image
+            };
+        }),
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        total: totals.total
+    };
+
+    // Save the order where the staff page can see it
+    const orders = getOrders();
+    orders.push(order);
+    saveOrders(orders);
+
+    // Empty the cart and forget the voucher and the form
+    saveCart([]);
+    localStorage.removeItem(VOUCHER_KEY);
+    localStorage.removeItem(DETAILS_KEY);
+
+    ['pickup-time', 'barista-note', 'voucher-code'].forEach(function (id) {
+        const field = document.getElementById(id);
+        if (field) field.value = '';
+    });
+
+    return order;
+}
+
+
+// ========== 10. CHECKOUT BUTTON ==========
 function handleCheckout() {
     const error = document.getElementById('checkout-error');
     const pickupField = document.getElementById('pickup-time');
@@ -242,6 +318,17 @@ function handleCheckout() {
         } else {
             alert(text);
         }
+    }
+
+    // Make sure orders-data.js was loaded in cart.php
+    if (typeof saveOrders !== 'function' || typeof getNextOrderId !== 'function') {
+        showError('Orders are not set up. Add js/orders-data.js before js/cart.js in cart.php.');
+        return;
+    }
+
+    if (getCart().length === 0) {
+        showError('Your cart is empty.');
+        return;
     }
 
     const pickup = pickupField.value;
@@ -275,14 +362,18 @@ function handleCheckout() {
     }
 
     if (error) error.textContent = '';
-    saveOrderDetails();
 
-    // The real checkout page will be connected later.
-    alert('All set! Pay in cash when you pick up your order.');
+    // All good: create the order (NEW)
+    const order = placeOrder(pickup);
+    renderCart();   // the cart is empty now, so the Empty Cart design appears
+
+    if (order) {
+        alert('Order #' + order.id + ' placed! Pay in cash when you pick it up at ' + formatTime(pickup) + '.');
+    }
 }
 
 
-// ========== 10. CART ICON BADGE ==========
+// ========== 11. CART ICON BADGE ==========
 // Shows the total number of drinks on the cart icon in the navbar
 function updateCartCount() {
     const badge = document.getElementById('cart-count');
@@ -298,7 +389,7 @@ function updateCartCount() {
 }
 
 
-// ========== 11. DISPLAY THE CART ITEMS ==========
+// ========== 12. DISPLAY THE CART ITEMS ==========
 function renderCart() {
     updateCartCount();   // works on every page that has the navbar
 
@@ -352,7 +443,7 @@ function renderCart() {
 }
 
 
-// ========== 12. BUTTON CLICKS ==========
+// ========== 13. BUTTON CLICKS ==========
 document.addEventListener('click', function (event) {
 
     // + and − buttons
@@ -382,6 +473,6 @@ document.addEventListener('click', function (event) {
 });
 
 
-// ========== 13. WHEN THE PAGE LOADS ==========
+// ========== 14. WHEN THE PAGE LOADS ==========
 loadOrderDetails();
 renderCart();
