@@ -17,9 +17,9 @@ function e(string $text): string
 
 // Dropdown options. value = what gets saved in the cart, label = what the user reads.
 $sizes = [
-    'Small' => 'Small 12oz',
-    'Medium' => 'Medium 16oz',
-    'Large' => 'Large 20oz',
+    'Small' => ['label' => 'Small 12oz', 'extra' => 0],
+    'Medium' => ['label' => 'Medium 16oz', 'extra' => 15],
+    'Large' => ['label' => 'Large 20oz', 'extra' => 30],
 ];
 $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
 ?>
@@ -30,6 +30,7 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DejaBrew | Menu</title>
+    <link rel="icon" type="image/png" href="assets/db-logo.png">
 
     <!-- Fonts only (no framework): Poppins = body, Allura = script, Playfair Display = logo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,6 +41,9 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/scroll-story.css">
+    <link rel="stylesheet" href="css/notifications.css">
+    <link rel="stylesheet" href="css/footer.css">
+
 </head>
 
 <body>
@@ -82,18 +86,30 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
             <p class="no-results" id="no-results" hidden>No drinks match your search. Try another name or category.</p>
         </section>
 
+        <section class="coffee-break" aria-labelledby="coffee-break-heading">
+            <h2 class="coffee-break-title" id="coffee-break-heading">Made for Your Coffee Break</h2>
+            <p class="coffee-break-text">Good coffee doesn't need a special occasion. Just a good moment.</p>
+        </section>
+
         <!-- NEW SCROLL STORY SECTION -->
         <?php include __DIR__ . '/includes/scroll-story.php'; ?>
+        <?php include __DIR__ . '/includes/new-series.php'; ?>
     </main>
+
+    <?php include __DIR__ . '/includes/footer.php'; ?>
 
     <!-- Small message that appears when something is added to the cart -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <?php include __DIR__ . '/includes/notifications.php'; ?>
+
+
 
     <!-- <script src="js/script.js"></script>
     <script src="js/scroll-story.js"></script> -->
     <script src="js/cart.js"></script>
-<script src="js/script.js"></script>
-<script src="js/scroll-story.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/scroll-story.js"></script>
+    <script src="js/notifications.js"></script>
 </body>
 
 </html>

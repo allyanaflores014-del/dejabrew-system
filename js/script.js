@@ -2,10 +2,11 @@
    DejaBrew - script.js (vanilla JavaScript, no libraries)
  
    1. Helpers
-   2. Hero cups (tap support for touch screens)
+   2. Hero cups (title swap, click to go to the card)
    3. Product card state: open (hover/tap) and flipped
-   4. Cart
+   4. Cart (quantity, price, add to cart)
    5. Search + category filter
+   6. New Series banner button
    ===================================================== */
  
  
@@ -41,7 +42,7 @@ function resetHeroTitle() {
     setHeroTitle(heroTitle.dataset.default);
 }
  
-// Scroll to the product card that matches a hero cup, then flash it.
+// Scroll to the product card that matches a hero cup (or the New Series button), then flash it.
 function goToProduct(productId) {
     const slot = document.getElementById('product-' + productId);
     if (!slot) return;
@@ -93,7 +94,7 @@ heroCups.forEach(function (cup) {
 /* ---------- 3. Product card state ---------- */
 /*
  * Every card has its own state, stored as CSS classes on that card only:
- *   .is-open     -> "hovered" look (Add to Cart + size + sugar)
+ *   .is-open     -> "hovered" look (Add to Cart + size + sugar + quantity)
  *   .is-flipped  -> showing the back
  * Because each class lives on ONE card element, cards never affect each other.
  */
@@ -151,8 +152,8 @@ cards.forEach(function (card) {
 });
  
 /*
- * One click listener on the grid handles every button (this is called
- * "event delegation"). event.target.closest(...) tells us what was clicked.
+ * One click listener handles every button (this is called "event delegation").
+ * event.target.closest(...) tells us what was clicked.
  * Each branch ends with "return", so clicking the info button can never
  * fall through to the add-to-cart code.
  */
@@ -165,36 +166,45 @@ document.addEventListener('click', function (event) {
         return;
     }
  
-    // 1) Info button -> flip to the back
+    // 1) The card is showing its back: a click ANYWHERE on it flips it to the front.
+    //    (The front face is hidden while flipped, so only the back can be clicked.)
+    if (card.classList.contains('is-flipped')) {
+        flipToFront(card);
+        return;
+    }
+ 
+    // 2) Info button -> flip to the back
     if (event.target.closest('.info-btn')) {
         flipToBack(card);
         return;
     }
  
-    // 2) Back button -> flip to the front
-    if (event.target.closest('.back-btn')) {
-        flipToFront(card);
+    // 3) Quantity - and + buttons
+    const qtyButton = event.target.closest('.card-qty-btn');
+    if (qtyButton) {
+        const change = qtyButton.classList.contains('card-qty-plus') ? 1 : -1;
+        const newQty = Math.min(MAX_QTY, Math.max(1, getCardQty(card) + change));
+        setCardQty(card, newQty);
         return;
     }
  
-    // 3) Add button
+    // 4) Add button
     if (event.target.closest('.add-btn')) {
-        // On touch, the first tap only reveals size + sugar; the next tap adds.
+        // On touch, the first tap only reveals the controls; the next tap adds.
         if (isTouchDevice() && !card.classList.contains('is-open')) {
             closeAllCards(card);
             openCard(card);
             return;
         }
-        // addToCart(card);
         addCardToCart(card);
         return;
     }
  
-    // 4) Using the dropdowns should not toggle the card.
+    // 5) Using the dropdowns should not toggle the card.
     if (event.target.closest('select, label')) return;
  
-    // 5) Touch only: tapping the card toggles the customization controls.
-    if (isTouchDevice() && !card.classList.contains('is-flipped')) {
+    // 6) Touch only: tapping the card toggles the controls.
+    if (isTouchDevice()) {
         if (card.classList.contains('is-open')) {
             closeCard(card);
         } else {
@@ -206,74 +216,79 @@ document.addEventListener('click', function (event) {
  
  
 /* ---------- 4. Cart ---------- */
-// A simple array. Each item looks like:
-// { productId: 1, productName: "Classic Iced Coffee", size: "Medium", sugar: "50%" }
-// const cart = [];
+/*
+ * The cart itself lives in cart.js (saved in localStorage) so the cart page can read it.
+ * Here we collect the choices from the card and call addToCart() from cart.js.
+ *
+ * Price rule: data-price on the card = SMALL price.
+ * Each <option> in the size dropdown has data-extra (0, 15, 30).
+ * unit price = small price + extra       total = unit price x quantity
+ */
+const MAX_QTY = 20;
  
-// const cartCount = document.getElementById('cart-count');
-// const toast     = document.getElementById('toast');
-// let toastTimer;
- 
-// function addToCart(card) {
-//     // Read the values chosen on THIS card only.
-//     const item = {
-//         productId:   Number(card.dataset.productId),
-//         productName: card.dataset.productName,
-//         size:        card.querySelector('.size-select').value,
-//         sugar:       card.querySelector('.sugar-select').value
-//     };
- 
-//     cart.push(item);
-//     console.log('Added to cart:', item);
-//     console.log('Cart now:', cart);
- 
-//     updateCartBadge();
-//     showToast(item.productName + ' added to cart');
-// }
- 
-// function updateCartBadge() {
-//     cartCount.textContent = cart.length;
-//     cartCount.hidden = cart.length === 0;
-// }
- 
-// function showToast(message) {
-//     toast.textContent = message;
-//     toast.classList.add('is-visible');
- 
-//     clearTimeout(toastTimer);
-//     toastTimer = setTimeout(function () {
-//         toast.classList.remove('is-visible');
-//     }, 2000);
-// }
-/* ---------- 4. Cart ---------- */
-// The cart itself lives in cart.js (saved in localStorage) so the cart page can read it.
-// Here we only collect the choices from the card and call addToCart() from cart.js.
 const toast = document.getElementById('toast');
 let toastTimer;
-
+ 
+function getCardQty(card) {
+    return Number(card.querySelector('.card-qty-value').textContent);
+}
+ 
+function getCardUnitPrice(card) {
+    const sizeSelect = card.querySelector('.size-select');
+    const extra = Number(sizeSelect.options[sizeSelect.selectedIndex].dataset.extra) || 0;
+    return Number(card.dataset.price) + extra;
+}
+ 
+// Updates "Total Amount: P..." on the card.
+function updateCardTotal(card) {
+    const total = getCardUnitPrice(card) * getCardQty(card);
+    card.querySelector('.card-total-value').textContent =
+        '₱' + total.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+ 
+function setCardQty(card, qty) {
+    card.querySelector('.card-qty-value').textContent = qty;
+    updateCardTotal(card);
+}
+ 
+// Changing the size changes the price.
+document.addEventListener('change', function (event) {
+    if (event.target.matches('.size-select')) {
+        updateCardTotal(event.target.closest('.product-card'));
+    }
+});
+ 
 function addCardToCart(card) {
     const sizeSelect  = card.querySelector('.size-select');
     const sugarSelect = card.querySelector('.sugar-select');
-
-    const size  = sizeSelect.options[sizeSelect.selectedIndex].text.trim();   // e.g. "Medium 16oz"
-    const sugar = sugarSelect.value;                                          // e.g. "50%"
-
-    addToCart({   // this function comes from cart.js
+ 
+    const size     = sizeSelect.options[sizeSelect.selectedIndex].text.trim();   // e.g. "Medium 16oz"
+    const sugar    = sugarSelect.value;                                           // e.g. "50%"
+    const quantity = getCardQty(card);
+ 
+    const product = {
         id:    card.dataset.productId + '|' + size + '|' + sugar,   // same drink + same options = same item
         name:  card.dataset.productName,
-        price: Number(card.dataset.price),
+        price: getCardUnitPrice(card),                              // price of ONE drink in this size
         image: card.dataset.image,
         size:  size,
         sugar: sugar
-    });
-
-    showToast(card.dataset.productName + ' added to cart');
+    };
+ 
+    // addToCart() (from cart.js) adds one drink per call, so call it once per quantity.
+    for (let i = 0; i < quantity; i++) {
+        addToCart(product);
+    }
+ 
+    showToast((quantity > 1 ? quantity + ' x ' : '') + product.name + ' added to cart');
+ 
+    setCardQty(card, 1);   // reset the card for the next order
 }
-
+ 
 function showToast(message) {
     toast.textContent = message;
     toast.classList.add('is-visible');
-
+ 
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () {
         toast.classList.remove('is-visible');
@@ -317,7 +332,6 @@ filterButtons.forEach(function (button) {
     });
 });
  
- 
 // Clears the search box and goes back to the "All" category.
 function resetFilters() {
     searchInput.value = '';
@@ -329,4 +343,13 @@ function resetFilters() {
  
     applyFilters();
 }
+ 
+ 
+/* ---------- 6. New Series banner button ---------- */
+// "Add to Cart" on the banner scrolls up to that drink's card in the menu.
+document.querySelectorAll('.series-btn').forEach(function (button) {
+    button.addEventListener('click', function () {
+        goToProduct(button.dataset.productId);
+    });
+});
  

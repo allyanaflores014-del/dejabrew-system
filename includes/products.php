@@ -16,7 +16,7 @@ $products = [
         'category' => 'iced-coffee',
         'image' => 'assets/Classic.png',
         'description' => 'Smooth, refreshing coffee served over ice for a simple everyday brew.',
-        'price' => 120,
+        'price' => 89,
     ],
     [
         'id' => 2,
@@ -25,7 +25,7 @@ $products = [
         'category' => 'iced-coffee',
         'image' => 'assets/CaramelMacchiato.png',
         'description' => 'Espresso poured over cold milk and finished with a ribbon of buttery caramel.',
-        'price' => 145,
+        'price' => 109,
     ],
     [
         'id' => 3,
@@ -34,7 +34,7 @@ $products = [
         'category' => 'iced-coffee',
         'image' => 'assets/SpanishLatte.png',
         'description' => 'Espresso and milk sweetened with condensed milk for a rich, creamy sip.',
-        'price' => 140,
+        'price' => 109,
     ],
     [
         'id' => 4,
@@ -43,7 +43,7 @@ $products = [
         'category' => 'iced-coffee',
         'image' => 'assets/CaramelLatte.png',
         'description' => 'Smooth espresso and milk sweetened with a drizzle of golden caramel.',
-        'price' => 140,
+        'price' => 99,
     ],
     [
         'id' => 5,
@@ -52,7 +52,7 @@ $products = [
         'category' => 'iced-coffee',
         'image' => 'assets/VanillaLatte.png',
         'description' => 'Creamy espresso and milk with a soft, sweet vanilla finish.',
-        'price' => 135,
+        'price' => 99,
     ],
     [
         'id' => 6,
@@ -61,7 +61,7 @@ $products = [
         'category' => 'hot-coffee',
         'image' => 'assets/Americano.png',
         'description' => 'Bold espresso topped with hot water for a clean, straightforward cup.',
-        'price' => 100,
+        'price' => 79,
     ],
     [
         'id' => 7,
@@ -70,7 +70,7 @@ $products = [
         'category' => 'hot-coffee',
         'image' => 'assets/CafeLatte.png',
         'description' => 'Espresso with steamed milk and a light layer of foam. Simple and smooth.',
-        'price' => 125,
+        'price' => 89,
     ],
     [
         'id' => 8,
@@ -79,7 +79,7 @@ $products = [
         'category' => 'hot-coffee',
         'image' => 'assets/MochaLatte.png',
         'description' => 'Espresso, steamed milk, and chocolate for a cozy, comforting cup.',
-        'price' => 140,
+        'price' => 99,
     ],
     [
         'id' => 9,
@@ -88,7 +88,7 @@ $products = [
         'category' => 'frappe',
         'image' => 'assets/ChocolateFrappe.png',
         'description' => 'Blended coffee and chocolate with ice, topped with whipped cream.',
-        'price' => 150,
+        'price' => 119,
     ],
     [
         'id' => 10,
@@ -97,7 +97,7 @@ $products = [
         'category' => 'frappe',
         'image' => 'assets/JavaChipFrappe.png',
         'description' => 'Icy blended coffee with chocolate chips and a swirl of whipped cream.',
-        'price' => 155,
+        'price' => 129,
     ],
 ];
 
