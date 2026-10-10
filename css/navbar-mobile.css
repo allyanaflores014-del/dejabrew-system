@@ -1,0 +1,199 @@
+/* navbar-mobile.css
+   Hamburger menu for phones. It is loaded by includes/header.php, so it works on every page
+   that has the main navbar (Menu, Cart, My Orders).
+   On desktop nothing changes: the button is hidden and the links stay in the bar.
+   The rules use #main-nav (an id) on purpose, so they win over the navbar styles in
+   style.css and receipt.css without changing those files. */
+
+/* The button is hidden on desktop */
+.nav-toggle {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    /* ---------- Hamburger button ---------- */
+
+    .nav-toggle {
+        position: relative;
+
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+
+        width: 44px;
+        height: 44px;
+
+        /* The negative margins keep the navbar the same height as before,
+           while the button is still big enough to tap. */
+        margin: -8px -10px -8px 0;
+        padding: 0;
+
+        border: 0;
+        border-radius: 10px;
+
+        background: transparent;
+        color: #24160f;
+
+        cursor: pointer;
+    }
+
+    .nav-toggle:focus-visible {
+        outline: 2px solid #a8764c;
+        outline-offset: 2px;
+    }
+
+    .nav-toggle__bar {
+        display: block;
+
+        width: 22px;
+        height: 2px;
+
+        border-radius: 2px;
+        background: currentColor;
+
+        transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+
+    /* Open: the three lines become an X */
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Small dot on the button when there are items in the cart (the menu is closed) */
+    .nav-toggle.has-items:not([aria-expanded="true"])::after {
+        content: "";
+
+        position: absolute;
+        top: 9px;
+        right: 8px;
+
+        width: 9px;
+        height: 9px;
+
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        background: #a8764c;
+    }
+
+    /* ---------- The menu (drops down under the navbar) ---------- */
+
+    #main-nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+
+        display: none;
+
+        margin: 0;
+        padding: 4px 16px 12px;
+
+        background: #ffffff;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 14px 24px rgba(43, 27, 20, 0.14);
+    }
+
+    #main-nav.is-open {
+        display: block;
+        animation: nav-drop 0.2s ease;
+    }
+
+    @keyframes nav-drop {
+        from {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #main-nav .nav-links {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    #main-nav .nav-links li {
+        display: block;
+        border-bottom: 1px solid #f1e9df;
+    }
+
+    #main-nav .nav-links li:last-child {
+        border-bottom: 0;
+    }
+
+    #main-nav .nav-links a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 4px;
+
+        font-size: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+        color: #24160f;
+    }
+
+    #main-nav .nav-links a:hover,
+    #main-nav .nav-links a:active {
+        color: #a8764c;
+    }
+
+    /* Cart and logout are icons in the bar, so show their names in the menu.
+       The text comes from the aria-label of the link ("Cart", "Log out"). */
+    #main-nav .icon-link {
+        position: relative;
+    }
+
+    #main-nav .icon-link::after {
+        content: attr(aria-label);
+        order: 1;
+    }
+
+    /* The cart number sits on the right side of its row */
+    #main-nav .cart-count {
+        position: static;
+        order: 2;
+
+        display: grid;
+        margin-left: auto;
+    }
+
+    #main-nav .cart-count[hidden] {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .nav-toggle__bar {
+        transition: none;
+    }
+
+    #main-nav.is-open {
+        animation: none;
+    }
+}

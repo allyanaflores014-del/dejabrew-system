@@ -307,6 +307,9 @@
       '"' +
       (isSelected ? "" : " hidden") +
       ">" +
+      '<button class="mo-receipt__close" type="button" aria-label="Close receipt">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+      "</button>" +
       '<header class="mo-receipt__head">' +
       '<img class="mo-receipt__logo" src="assets/dblogo.png" alt="DejaBrew logo">' +
       '<p class="mo-receipt__brand">DejaBrew</p>' +
@@ -417,6 +420,7 @@
       page.classList.add("mo-page--empty");
       list.innerHTML = "";
       receiptBox.innerHTML = "";
+      closeReceiptSheet();
       return;
     }
 
@@ -463,8 +467,14 @@
       // some browsers block this on local files; the page still works
     }
 
-    // on tablet / phone the receipt is under the list, so bring it into view
-    if (shouldScroll && window.matchMedia("(max-width: 900px)").matches) {
+    if (shouldScroll && isPhone()) {
+      // on a phone (500px or less) the receipt opens as a pop-up, so the user does not have to scroll down
+      openReceiptSheet();
+    } else if (
+      shouldScroll &&
+      window.matchMedia("(max-width: 900px)").matches
+    ) {
+      // on a tablet (501px to 900px) the receipt is under the list, so bring it into view
       var receipt = receiptBox.querySelector(
         '.mo-receipt[data-order-id="' + selectedId + '"]',
       );
@@ -477,6 +487,48 @@
           block: "start",
         });
       }
+    }
+  }
+
+  // ---------- receipt pop-up (phone only) ----------
+
+  var phoneQuery = window.matchMedia("(max-width: 500px)"); // the pop-up is only for phones
+  var lastCard = null; // the card that opened the pop-up, so the focus can go back to it
+
+  function isPhone() {
+    return phoneQuery.matches;
+  }
+
+  // Shows the receipt over the list. The CSS (.is-receipt-open) does the showing.
+  function openReceiptSheet() {
+    page.classList.add("is-receipt-open");
+    document.body.style.overflow = "hidden"; // the page behind does not scroll
+
+    receiptBox.setAttribute("role", "dialog");
+    receiptBox.setAttribute("aria-modal", "true");
+
+    var closeButton = receiptBox.querySelector(
+      ".mo-receipt:not([hidden]) .mo-receipt__close",
+    );
+    if (closeButton) {
+      closeButton.focus();
+    }
+  }
+
+  // Hides the receipt pop-up and gives the focus back to the order card.
+  function closeReceiptSheet() {
+    if (!page.classList.contains("is-receipt-open")) {
+      return;
+    }
+
+    page.classList.remove("is-receipt-open");
+    document.body.style.overflow = "";
+
+    receiptBox.removeAttribute("role");
+    receiptBox.removeAttribute("aria-modal");
+
+    if (lastCard && document.contains(lastCard)) {
+      lastCard.focus();
     }
   }
 
@@ -516,6 +568,7 @@
       return; // let "open in new tab" work normally
     }
     event.preventDefault();
+    lastCard = card;
     selectOrder(card.dataset.orderId, true);
   });
 
@@ -524,6 +577,29 @@
     var button = event.target.closest(".mo-download");
     if (button) {
       downloadReceipt(button.dataset.orderId);
+      return;
+    }
+
+    // close the pop-up: the X button, or tapping the dark area around the receipt
+    if (
+      event.target.closest(".mo-receipt__close") ||
+      event.target === receiptBox
+    ) {
+      closeReceiptSheet();
+    }
+  });
+
+  // Escape closes the pop-up.
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeReceiptSheet();
+    }
+  });
+
+  // If the window becomes wider than a phone (rotate the phone, resize), the receipt is not a pop-up anymore.
+  phoneQuery.addEventListener("change", function (event) {
+    if (!event.matches) {
+      closeReceiptSheet();
     }
   });
 

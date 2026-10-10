@@ -1009,3 +1009,150 @@ a:focus-visible {
         font-size: 19.2px;
     }
 }
+
+
+/* =========================================================
+   MOBILE POLISH (login + sign up)
+   Short picture on top, and the form is a card that
+   slides up over the bottom of the picture.
+   Keep this block at the very bottom of the file.
+   ========================================================= */
+
+/* ---------- Tablet + phone ---------- */
+@media (max-width: 900px) {
+
+    /* Everything in the picture follows the screen WIDTH, so it looks the same
+       at 400px, 500px, and 800px (the 500px look, just bigger or smaller). */
+    .visual {
+        height: clamp(190px, 48vw, 420px);
+        min-height: 0;
+    }
+
+    .curve {
+        top: 0;
+        left: -8%;
+
+        width: 115%;
+        height: 100%;
+
+        object-fit: cover;
+        object-position: left bottom;
+    }
+
+    .table {
+        width: 100%;
+        max-width: none;
+
+        left: 50%;
+        bottom: -8%;
+
+        transform: translateX(-50%);
+    }
+
+    /* Sized by the height of the picture, so the cups always fit inside it */
+    .drinks {
+        width: auto;
+        height: 84%;
+        max-width: none;
+
+        left: 50%;
+        bottom: 10%;
+
+        transform: translateX(-50%);
+    }
+
+    /* The form is a dark card with rounded top corners, over the picture */
+    .panel {
+        width: 100%;
+        margin: -28px 0 0;
+        padding: 30px max(20px, calc((100% - 420px) / 2)) 44px;
+
+        background: var(--dark);
+        border-radius: 28px 28px 0 0;
+    }
+}
+
+/* ---------- Phone ---------- */
+@media (max-width: 600px) {
+
+    .panel {
+        margin-top: -22px;
+        padding: 18px max(32px, calc((100% - 340px) / 2)) 30px;
+    }
+
+    .logo {
+        width: 32px;
+        margin-bottom: 5px;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+    }
+
+    .subtitle {
+        margin-top: 2px;
+        font-size: 0.72rem;
+    }
+
+    form {
+        margin-top: 12px;
+    }
+
+    .field {
+        margin-bottom: 6px;
+    }
+
+    label {
+        margin-bottom: 3px;
+        font-size: 0.72rem;
+    }
+
+    input {
+        height: 38px;
+        padding-left: 38px;
+        font-size: 13px;
+    }
+
+    input.has-toggle {
+        padding-right: 40px;
+    }
+
+    .input-wrap::before {
+        left: 12px;
+        width: 14px;
+        height: 14px;
+    }
+
+    .toggle {
+        width: 28px;
+        height: 28px;
+    }
+
+    .toggle img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .error {
+        min-height: 1em;
+        padding-top: 2px;
+        font-size: 0.66rem;
+    }
+
+    .alert {
+        padding: 7px 9px;
+        font-size: 0.72rem;
+        line-height: 1.35;
+    }
+
+    .submit {
+        height: 38px;
+        margin-top: 2px;
+        font-size: 0.8rem;
+    }
+
+    .switch {
+        margin-top: 10px;
+        font-size: 0.72rem;
+    }
+}

@@ -758,83 +758,101 @@
 
 
 /* "No orders yet" page
-   Same style as the empty cart page. It shows when the user has no order history. */
+   Same position and sizes as the empty cart page (.empty-cart in css/cart.css).
+   The sizes are in px so they don't shrink with the rem scaling of this page. */
 
 .mo-page--empty {
-  align-items: center; /* stays centered on phones too */
+  align-items: flex-start; /* starts right under the navbar, like the cart page */
+  padding: 0;
+  background-color: #f8f3ea; /* same cream as the cart page */
 }
 
 .mo-none {
-  width: 100%;
-  max-width: 36rem;
-  margin: 0 auto;
-  padding: 1rem 0;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+
+  width: 100%;
+  max-width: none;
+  min-height: 65vh;
+  margin: 0;
+  padding: 40px 20px;
 }
 
 .mo-none__icon {
   display: block;
-
-  width: 10rem;
+  width: 75px;        /* was 80px: now the logo is the same size as the cart's */
+  max-width: 60%;
   height: auto;
-
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 20px;
+  object-fit: contain;
 }
 
 .mo-none__title {
-  margin: 0 0 0.6rem;
+  margin: 0 0 10px;
 
   font-family: "Playfair Display", Georgia, serif;
-  font-weight: 600;
-  font-size: clamp(1.7rem, 3vw, 2.2rem);
-  line-height: 1.2;
+  font-weight: 700;
+  font-size: 27.2px; /* 1.7rem, same as the cart */
+  line-height: 1.3;
 
-  color: var(--mo-dark);
+  color: #2b1b14;
 }
 
 .mo-none__text {
-  margin: 0 0 1.6rem;
+  margin: 0 0 24px;
 
-  font-size: clamp(0.9rem, 1.4vw, 1rem);
-  line-height: 1.7;
+  font-size: 13.6px; /* 0.85rem, same as the cart */
+  line-height: 1.6;
 
-  color: var(--mo-muted);
+  color: #7a6a5f;
 }
 
 .mo-none__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 3rem;
-  padding: 0.75rem 2rem;
+  display: inline-block;
+  padding: 12px 28px;
 
   border-radius: 999px;
 
-  background: var(--mo-tan);
+  background: #b07a4b;
   color: #ffffff;
 
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 13.6px;
+  font-weight: 400;
+  line-height: 1.5;
   text-decoration: none;
 
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
+  transition: background-color 0.2s;
 }
 
 .mo-none__btn:hover {
-  background: var(--mo-tan-hover);
-}
-
-.mo-none__btn:active {
-  transform: translateY(1px);
+  background: #96663c;
 }
 
 .mo-none__btn:focus-visible {
-  outline: 2px solid var(--mo-dark);
+  outline: 2px solid #2b1b14;
   outline-offset: 3px;
+}
+
+/* Phone: same sizes as the cart page */
+@media (max-width: 600px) {
+  .mo-none {
+    padding: 50px 16px;
+  }
+
+  .mo-none__icon {
+    width: 130px;
+  }
+
+  .mo-none__title {
+    font-size: 24px;
+  }
+
+  .mo-none__text {
+    font-size: 13.1px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -855,4 +873,98 @@
 /* The empty page has a plain cream background, like the empty cart */
 .mo-page--empty .mo-drinks {
   display: none;
+}
+
+/* Receipt as a pop-up on tablet and phone
+   The receipt opens over the order list when an order is tapped (js/receipt.js adds
+   the class "is-receipt-open"), so the user does not have to scroll down to find it. */
+
+/* The X button is only for the pop-up, so it is hidden on desktop */
+.mo-receipt__close {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  /* No z-index here, so the pop-up can go above the navbar (the navbar has z-index 50) */
+  .mo-layout {
+    z-index: auto;
+  }
+
+  /* The dark area around the receipt. It is hidden until an order is tapped. */
+  .mo-receipt-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+
+    padding: 16px 12px 24px;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+            /* dark and blurred, so the list behind the receipt is not readable */
+    background: rgba(36, 22, 15, 0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .mo-page.is-receipt-open .mo-receipt-wrap {
+    display: flex;
+    animation: mo-sheet-in 0.2s ease;
+  }
+
+  @keyframes mo-sheet-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* margin: auto centers a short receipt, and a long one scrolls */
+  .mo-receipt-wrap .mo-receipt {
+    position: relative;
+    max-width: 26rem;
+    margin: auto;
+  }
+
+
+  /* X button inside the paper, at the top right */
+  .mo-receipt__close {
+    position: absolute;
+        top: 3.2rem;
+    right: 18%;
+
+    display: grid;
+    place-items: center;
+
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    border: 1px solid #e3d6c8;
+    border-radius: 50%;
+
+    background: #ffffff;
+    color: var(--mo-dark);
+    box-shadow: 0 2px 8px rgba(36, 22, 15, 0.18);
+
+    cursor: pointer;
+  }
+
+  .mo-receipt__close:focus-visible {
+    outline: 2px solid var(--mo-tan);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mo-page.is-receipt-open .mo-receipt-wrap {
+    animation: none;
+  }
 }

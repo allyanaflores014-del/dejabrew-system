@@ -73,44 +73,79 @@ g
 
 /* ========== 4. EMPTY CART STATE ========== */
 
+/* EMPTY CART STATE — MATCH RECEIPT.PHP */
 .empty-cart {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+
+    width: 100%;
     min-height: 65vh;
     padding: 40px 20px;
 }
 
+/* LOGO / ILLUSTRATION */
 .empty-illustration {
-    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px;
 }
 
 .empty-illustration img {
     display: block;
-    width: 180px;       /* change this number to make the logo bigger or smaller */
+    width: 80px;
     max-width: 60%;
-    height: auto;       /* keeps the logo's proportions */
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
 }
 
+/* HEADING */
 .empty-cart h2 {
-    font-size: 1.9rem;
+    font-size: 1.7rem;
     margin-bottom: 10px;
+    line-height: 1.3;
 }
 
+/* DESCRIPTION */
 .empty-cart p {
     color: var(--text-light);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     line-height: 1.6;
     margin-bottom: 24px;
 }
 
+/* EXPLORE MENU BUTTON */
 .empty-cart .btn {
     padding: 12px 28px;
     border-radius: 999px;
     line-height: 1.5;
+    font-size: 0.85rem;
 }
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .empty-cart {
+        padding: 40px 16px;
+    }
+
+    .empty-illustration img {
+        width: 75px;
+    }
+
+    .empty-cart h2 {
+        font-size: 1.5rem;
+    }
+
+    .empty-cart p {
+        font-size: 0.82rem;
+    }
+}
+
 
 /* ========== 5. CART WITH ITEMS (LEFT SIDE) ========== */
 

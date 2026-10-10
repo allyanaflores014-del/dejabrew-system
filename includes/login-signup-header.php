@@ -11,7 +11,7 @@
             <ul class="nav-links">
 
                 <li>
-                    <a href="#" class="icon-link" aria-label="Exit">
+                    <!-- <a href="#" class="icon-link" aria-label="Exit">
                         <svg
                             width="18"
                             height="18"
@@ -27,7 +27,7 @@
                             <path d="M16 17l5-5-5-5" />
                             <path d="M21 12H9" />
 
-                        </svg>
+                        </svg> -->
                     </a>
                 </li>
 

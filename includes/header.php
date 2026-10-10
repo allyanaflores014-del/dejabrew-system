@@ -1,8 +1,21 @@
+<!-- Menu button for phones (css/navbar-mobile.css and js/navbar-mobile.js).
+     The link and script are in this file so every page that includes the header gets them. -->
+<link rel="stylesheet" href="css/navbar-mobile.css">
+<script src="js/navbar-mobile.js" defer></script>
+
 <header class="navbar">
     <div class="navbar-inner">
         <a href="index.php" class="logo">DejaBrew</a>
 
-        <nav aria-label="Main navigation">
+        <!-- Hamburger button: it is hidden on desktop and only shows on phones -->
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false"
+            aria-controls="main-nav">
+            <span class="nav-toggle__bar"></span>
+            <span class="nav-toggle__bar"></span>
+            <span class="nav-toggle__bar"></span>
+        </button>
+
+        <nav id="main-nav" aria-label="Main navigation">
             <ul class="nav-links">
                 <li><a href="index.php#menu">Menu</a></li>
                 <li><a href="receipt.php">My Activity</a></li>
