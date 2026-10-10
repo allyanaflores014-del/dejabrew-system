@@ -119,6 +119,7 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
     <script src="js/script.js"></script>
     <script src="js/scroll-story.js"></script>
     <script src="js/notifications.js"></script>
+    <script src="js/activity-badge.js"></script>
 </body>
 
 </html>

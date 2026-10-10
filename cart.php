@@ -95,6 +95,7 @@ require_once __DIR__ . '/includes/functions.php';   // starts the session, so we
         const LOGGED_IN_USER = <?= isLoggedIn() ? json_encode($_SESSION['user'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) : 'null' ?>;
     </script>
     <script src="js/orders-data.js"></script>
+    <script src="js/activity-badge.js"></script>
     <script src="js/availability.js"></script>
     <script src="js/cart.js"></script>
 </body>

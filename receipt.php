@@ -98,6 +98,7 @@ $pageUrl = basename($_SERVER['PHP_SELF']);
     </script>
     <script src="js/orders-data.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/activity-badge.js"></script>
     <script src="js/receipt.js"></script>
 </body>
 

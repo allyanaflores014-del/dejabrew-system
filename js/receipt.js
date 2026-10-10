@@ -189,7 +189,7 @@
     if (page.dataset.forceEmpty === "1") {
       return [];
     }
-        // Only the orders of the logged-in customer (LOGGED_IN_USER is printed by receipt.php)
+    // Only the orders of the logged-in customer (LOGGED_IN_USER is printed by receipt.php)
     var user = typeof LOGGED_IN_USER !== "undefined" ? LOGGED_IN_USER : null;
     if (!user || typeof getOrdersForCustomer !== "function") {
       return [];
@@ -434,13 +434,23 @@
       ? String(findOrder(wanted).id)
       : String(orders[0].id);
 
-    list.innerHTML = orders.map(buildCard).join("");
+        list.innerHTML = orders.map(buildCard).join("");
     receiptBox.innerHTML = orders.map(buildReceipt).join("");
+
+    // Binura ng innerHTML ang mga tuldok, kaya ibalik
+    if (window.refreshActivityBadge) {
+      window.refreshActivityBadge();
+    }
   }
 
   // Highlights one card and shows only that order's receipt.
   function selectOrder(orderId, shouldScroll) {
     selectedId = String(orderId);
+
+    // Nabuksan na ng customer ang order, kaya mawawala ang bilog
+    if (window.markOrderSeen) {
+      window.markOrderSeen(selectedId);
+    }
 
     list.querySelectorAll(".mo-card").forEach(function (card) {
       var isActive = card.dataset.orderId === selectedId;

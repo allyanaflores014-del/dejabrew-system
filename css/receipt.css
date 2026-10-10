@@ -968,3 +968,45 @@
     animation: none;
   }
 }
+
+.mo-body .navbar .activity-link {
+  position: relative;
+  display: inline-flex;
+}
+
+.mo-body .navbar .activity-count {
+  position: absolute;
+  top: -9px;
+  right: -14px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #a8764c;
+  color: #ffffff;
+  font-size: 10.4px;
+  font-weight: 600;
+  display: grid;
+  place-items: center;
+}
+
+.mo-body .navbar .activity-count[hidden] {
+  display: none;
+}
+
+/* Tuldok sa order card na may bagong update */
+.mo-card {
+  position: relative;
+}
+
+.mo-card.is-new::after {
+  content: "";
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: #a8764c;
+  box-shadow: 0 0 0 3px #ffffff;
+}
