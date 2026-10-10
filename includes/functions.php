@@ -72,15 +72,34 @@ function validateConfirm($password, $confirm) {
 
 // ---------------------------------------------------------
 // Account functions
-// For now the accounts are saved in $_SESSION since we don't have a database yet.
+// We don't have a database, so the accounts are saved in a file (data/accounts.php).
+// This way they are still there after the session ends or the browser is closed.
 // ---------------------------------------------------------
 
-// Gets the list of registered accounts. If there is none yet, it gives an empty list.
+// Gets the list of registered accounts from the file. If there is none yet, it gives an empty list.
 function getAccounts() {
-    if (!isset($_SESSION['accounts'])) {
-        $_SESSION['accounts'] = [];
+    if (!file_exists(ACCOUNTS_FILE)) {
+        return [];
     }
-    return $_SESSION['accounts'];
+    // The first line of the file is the PHP exit command (it protects the file), so remove it before reading the JSON.
+    $text = file_get_contents(ACCOUNTS_FILE);
+    $text = str_replace("<?php exit; ?>\n", "", $text);
+    $accounts = json_decode($text, true);
+
+    // If the file is empty or broken, json_decode() does not give an array, so use an empty list.
+    return is_array($accounts) ? $accounts : [];
+}
+
+// Writes the list of accounts to the file. Returns true if it was saved, false if not.
+function saveAccounts($accounts) {
+    // Create the "data" folder the first time (nothing happens if it already exists).
+    $folder = dirname(ACCOUNTS_FILE);
+    if (!is_dir($folder)) {
+        mkdir($folder, 0755, true);
+    }
+    $text = "<?php exit; ?>\n" . json_encode($accounts, JSON_PRETTY_PRINT);
+    // LOCK_EX stops two sign ups from writing at the same time.
+    return file_put_contents(ACCOUNTS_FILE, $text, LOCK_EX) !== false;
 }
 
 // Finds an account using the email. It checks the staff accounts first, then the customers who signed up.
@@ -108,6 +127,7 @@ function findAccount($email) {
 }
 
 // Saves a new customer account. The password is hashed so it is not saved as plain text.
+// Returns true if the account was saved, false if the file could not be written.
 function registerAccount($username, $email, $password) {
     $accounts = getAccounts();
     $accounts[] = [
@@ -116,7 +136,7 @@ function registerAccount($username, $email, $password) {
         'password' => password_hash($password, PASSWORD_DEFAULT),
         'role'     => 'customer'
     ];
-    $_SESSION['accounts'] = $accounts;
+    return saveAccounts($accounts);
 }
 
 // Logs the user in by saving their username, email, and role in the session.

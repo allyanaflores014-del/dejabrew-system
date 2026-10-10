@@ -160,6 +160,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
       <p class="switch">Don't have an account? <a href="signup.php">Sign Up</a></p>
     </section>
   </main>
+  <?php if ($action === "logout"): ?>
+    <!-- Control structure (if): runs only after logging out. The cart is saved in the browser (localStorage),
+         so it is emptied here. This way the next person who logs in does not see the old cart. -->
+    <script>
+      ["dejabrewCart", "dejabrewVoucher", "dejabrewOrderDetails"].forEach(function (key) {
+        localStorage.removeItem(key);
+      });
+    </script>
+  <?php endif; ?>
+
   <!-- JavaScript for the show/hide password button -->
   <script src="js/login.js"></script>
 </body>

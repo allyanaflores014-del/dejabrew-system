@@ -41,11 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     // Only save the account if there are no errors in any field.
     // && is a logical operator, so all of the conditions have to be true.
     if ($usernameError === "" && $emailError === "" && $passwordError === "" && $confirmError === "") {
-        registerAccount($username, $email, $password);
-        // Gets the password strength (Weak, Medium, or Strong) to show in the message.
-        $strength = getPasswordStrength($password);
-        // The dot (.) operator joins the text and the variables into one message.
-        $success = "Welcome to DejaBrew, " . ucfirst($username) . "! Your account is ready. Password strength: " . $strength . ".";
+        // registerAccount() gives true if the account was saved in the file, false if it could not be saved.
+        if (registerAccount($username, $email, $password)) {
+            // Gets the password strength (Weak, Medium, or Strong) to show in the message.
+            $strength = getPasswordStrength($password);
+            // The dot (.) operator joins the text and the variables into one message.
+            $success = "Welcome to DejaBrew, " . ucfirst($username) . "! Your account is ready. Password strength: " . $strength . ".";
+        } else {
+            $usernameError = "Sorry, the account could not be saved. Please try again.";
+        }
     }
 }
 ?>
