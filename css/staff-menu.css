@@ -1,12 +1,4 @@
-/* =====================================================
-   DejaBrew - staff-menu.css  (Menu Management page)
-   Uses the variables and shell from staff-orders.css.
-   1. Heading and card
-   2. Toolbar (search + filters)
-   3. Table head and rows
-   4. Expanded detail + toggle switch
-   5. Responsive
-   ===================================================== */
+
 
 /* Column sizes (the header and every row share this) */
 .menu-section {
@@ -114,7 +106,7 @@
 
 .head-avail {
     text-align: right;
-    padding-right: 28px;   /* lines up with the status text, not the chevron */
+    padding-right: 28px;  
 }
 
 .menu-item {
@@ -277,8 +269,6 @@
 }
 
 /* ---------- 4b. Page layout: only the product list scrolls ---------- */
-
-/* The whole page is exactly the height of the screen (no page scroll) */
 .staff-shell {
     height: 100vh;
     min-height: 0;
@@ -325,8 +315,6 @@
 
 
 /* ---------- 5. Responsive ---------- */
-
-/* Tablet and mobile: the sidebar becomes a bar under the top bar */
 @media (max-width: 820px) {
     .staff-shell {
         grid-template-columns: minmax(0, 1fr);

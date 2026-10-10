@@ -1,8 +1,5 @@
 // ========== 1. SET UP ==========
-// Put the sample orders in localStorage the first time the page opens
 seedSampleOrders();
-
-
 // ========== 2. HELPERS ==========
 // Makes text safe to put inside HTML
 function escapeHtml(text) {

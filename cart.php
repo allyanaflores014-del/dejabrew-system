@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DejaBrew | Cart</title>
 
-    <!-- Tab icon -->
     <link rel="icon" type="image/png" href="assets/db-logo.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +14,6 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <!-- Order matters: shared styles first, then the cart page styles -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/cart.css">
 </head>
@@ -26,7 +24,6 @@
 
     <main class="cart-page">
 
-        <!-- STATE 1: EMPTY CART -->
         <section id="empty-cart" class="empty-cart">
             <div class="empty-illustration">
                 <img src="assets/db-logo.png" alt="DejaBrew logo">
@@ -36,21 +33,16 @@
             <a href="index.php#menu" class="btn btn-primary">Explore Menu →</a>
         </section>
 
-        <!-- STATE 2: CART WITH ITEMS -->
         <section id="cart-with-items" class="cart-layout">
 
-            <!-- LEFT SIDE: cart items -->
             <div class="cart-left">
                 <a href="index.php#menu" class="back-link">← Back to Menu</a>
                 <h1>Your Cart</h1>
                 <p class="cart-subtitle">Review your items before proceeding to checkout.</p>
 
-                <div id="cart-items">
-                    <!-- JavaScript fills this in (see js/cart.js) -->
-                </div>
+                <div id="cart-items"></div>
             </div>
 
-            <!-- RIGHT SIDE: order summary -->
             <aside class="order-summary">
                 <h2>Order Summary</h2>
 
@@ -65,7 +57,6 @@
                 <label for="barista-note">Note to Barista:</label>
                 <textarea id="barista-note" rows="3" placeholder="e.g. Less ice"></textarea>
 
-                <!-- VOUCHER SECTION -->
                 <label for="voucher-code">Promo / Voucher Code:</label>
                 <div class="voucher-row">
                     <input type="text" id="voucher-code" placeholder="e.g. DEJA5">
@@ -73,7 +64,6 @@
                 </div>
                 <p id="voucher-message" class="voucher-message"></p>
 
-                <!-- TOTALS -->
                 <div class="summary-row">
                     <span>Subtotal <span id="item-count"></span></span>
                     <span id="subtotal">₱0</span>
@@ -87,7 +77,6 @@
                     <span id="total">₱0</span>
                 </div>
 
-                <!-- CHECKOUT (only ONE button) -->
                 <p id="checkout-error" class="checkout-error"></p>
                 <button class="btn btn-primary" id="checkout-btn">Proceed to Checkout →</button>
             </aside>

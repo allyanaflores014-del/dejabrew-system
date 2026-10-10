@@ -1,5 +1,7 @@
-
-
+<?php
+require_once 'includes/functions.php';   
+requireRole('staff');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,7 +61,7 @@
                     <span>Status</span>
                 </div>
 
-                <!-- TEMPORARY sample row. JavaScript will replace this in Step 5. -->
+                <!-- TEMPORARY sample row. -->
                 <div id="orders-list">
                     <!-- <button type="button" class="order-row">
                         <span class="row-id">#1008</span>
