@@ -237,6 +237,46 @@ button { cursor: pointer; }
     font-size: 1.5rem;
     font-weight: 400;
 }
+
+/* Greeting under the Menu title */
+.menu-greeting {
+  margin: 0.25rem 0 1.5rem;
+  text-align: center;
+}
+
+.menu-greeting-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+}
+
+/* "Good evening," */
+.menu-greeting-serif {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  color: #8a5a3b;
+}
+
+/* The username in the script font (same as the product names) */
+.menu-greeting-script {
+  font-family: "Allura", "Brush Script MT", cursive;
+  font-size: 2rem;
+  line-height: 1.2;
+  color: #24160f;
+}
+
+/* "What are you having today?" */
+.menu-greeting-text {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: #78685d;
+}
  
 .menu-toolbar {
     display: flex;

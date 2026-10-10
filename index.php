@@ -5,6 +5,11 @@
 require __DIR__ . '/includes/products.php';
 require_once __DIR__ . '/includes/functions.php';   // session + isLoggedIn() for the header
 
+// Greeting for the menu page. getGreeting() gives morning, afternoon, or evening depending on the time.
+// If the user is logged in, I also get their username so it can be shown separately.
+$greeting = getGreeting();
+$greetingName = isLoggedIn() ? ucfirst($_SESSION['user']['username']) : "";
+
 // Short helper: makes text safe to print inside HTML (prevents broken markup / XSS).
 function e(string $text): string
 {
@@ -50,8 +55,19 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
         <?php include __DIR__ . '/includes/hero.php'; ?>
 
         <section class="menu" id="menu" aria-labelledby="menu-heading">
-            <h2 class="menu-title" id="menu-heading">Menu</h2>
 
+        <p class="menu-greeting">
+                <span class="menu-greeting-top">
+                    <span class="menu-greeting-serif"><?php echo e($greeting); ?><?php echo $greetingName !== "" ? "," : "!"; ?></span>
+                    <?php if ($greetingName !== ""): ?>
+                        <span class="menu-greeting-script"><?php echo e($greetingName); ?>!</span>
+                    <?php endif; ?>
+                </span>
+                <span class="menu-greeting-text">What are you having today?</span>
+            </p>
+
+            <h2 class="menu-title" id="menu-heading">Menu</h2>
+            
             <!-- Search + category filters -->
             <div class="menu-toolbar">
                 <div class="search">

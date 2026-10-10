@@ -261,7 +261,7 @@ function requireRole($role) {
 function getHomePage($role) {
     switch ($role) {
         case "staff":
-            return "staff-menu.php";   // staff goes to the staff page
+            return "staff-orders.php";   // staff goes to the staff page
         default:
             return "index.php";             // customers go to the home page
     }

@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/products.php';    // $products array
 
 requireRole('staff');
 
-// Category slug (galing sa products.php) -> label na ipapakita
+// Category names. The keys are the category slugs from products.php, and the values are the labels shown on the page.
 $categoryLabels = [
     'iced-coffee' => 'Iced Coffee',
     'hot-coffee' => 'Hot Coffee',
