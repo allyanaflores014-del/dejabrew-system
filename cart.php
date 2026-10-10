@@ -1,4 +1,3 @@
-<?php include __DIR__ . '/includes/header.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,26 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DejaBrew | Cart</title>
-   <link rel="icon" type="image/png" href="/dejabrew-system/assets/db-logo.png">
-<link rel="shortcut icon" href="/dejabrew-system/assets/db-logo.png">
+
+    <!-- Tab icon -->
+    <link rel="icon" type="image/png" href="assets/db-logo.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap"
         rel="stylesheet">
 
+    <!-- Order matters: shared styles first, then the cart page styles -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/cart.css">
 </head>
 
-<body>
+<body class="cart-body">
 
+    <?php include __DIR__ . '/includes/header.php'; ?>
 
     <main class="cart-page">
 
         <!-- STATE 1: EMPTY CART -->
         <section id="empty-cart" class="empty-cart">
-            <div class="empty-illustration">☕</div>
+            <div class="empty-illustration">
+                <img src="assets/db-logo.png" alt="DejaBrew logo">
+            </div>
             <h2>Your cart is empty</h2>
             <p>Looks like you haven't added anything yet.<br>Go find your favorite drink!</p>
             <a href="index.php#menu" class="btn btn-primary">Explore Menu →</a>
@@ -92,7 +97,7 @@
     </main>
 
     <script src="js/orders-data.js"></script>
-<script src="js/cart.js"></script>
+    <script src="js/cart.js"></script>
 </body>
 
 </html>
