@@ -1,11 +1,6 @@
 <?php
 /*
  * index.php
- * ---------
- * The home page. PHP's job here is small and clear:
- *   1. load the product data
- *   2. repeat the product card once per product
- * Everything else is plain HTML, CSS, and JavaScript.
  */
 require __DIR__ . '/includes/products.php';
 
@@ -32,7 +27,6 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
     <title>DejaBrew | Menu</title>
     <link rel="icon" type="image/png" href="assets/db-logo.png">
 
-    <!-- Fonts only (no framework): Poppins = body, Allura = script, Playfair Display = logo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -43,6 +37,7 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
     <link rel="stylesheet" href="css/scroll-story.css">
     <link rel="stylesheet" href="css/notifications.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/availability.css">
 
 </head>
 
@@ -102,10 +97,7 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <?php include __DIR__ . '/includes/notifications.php'; ?>
 
-
-
-    <!-- <script src="js/script.js"></script>
-    <script src="js/scroll-story.js"></script> -->
+    <script src="js/availability.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/script.js"></script>
     <script src="js/scroll-story.js"></script>

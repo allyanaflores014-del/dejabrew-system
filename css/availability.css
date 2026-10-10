@@ -1,0 +1,42 @@
+/* =====================================================
+   availability.css
+   ===================================================== */
+ 
+/* Faded cup and title */
+.product-card.is-sold-out .card-image img { filter: grayscale(1); opacity: 0.45; }
+.product-card.is-sold-out .card-title { opacity: 0.5; }
+ 
+/* "Sold out" label in the middle of the cup */
+.sold-out-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    pointer-events: none;              /* the info button under it still works */
+}
+ 
+/* Disabled add button */
+.product-card.is-sold-out .add-btn,
+.product-card.is-sold-out .add-btn:hover {
+    background: #b9aca1;
+    cursor: not-allowed;
+}
+ 
+/* New Series banner button */
+.series-btn:disabled,
+.series-btn:disabled:hover {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    background: var(--white);
+}
+ 

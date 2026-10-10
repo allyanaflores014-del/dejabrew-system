@@ -532,3 +532,5 @@ g
         padding: 10px 16px !important;
     }
 }
+.cart-item.is-unavailable img { filter: grayscale(1); opacity: 0.5; }
+.item-unavailable { color: #b3261e; font-size: 0.8rem; font-weight: 500; }

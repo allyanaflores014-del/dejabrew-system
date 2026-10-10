@@ -319,6 +319,10 @@ function handleCheckout() {
             alert(text);
         }
     }
+        if (getCart().some(function (item) { return !isProductAvailable(String(item.id).split('|')[0]); })) {
+        showError('Please remove the unavailable items from your cart.');
+        return;
+    }
 
     // Make sure orders-data.js was loaded in cart.php
     if (typeof saveOrders !== 'function' || typeof getNextOrderId !== 'function') {
@@ -410,21 +414,25 @@ function renderCart() {
             itemsSection.style.display = 'grid';
         }
     }
-
+    const unavailable = !isProductAvailable(String(item.id).split('|')[0]);
     container.innerHTML = '';
 
     cart.forEach(function (item) {
+
+        if (!isProductAvailable(String(item.id).split('|')[0])) return;   // sold-out items are not counted
+
         // Show size and sugar only if the item has them
         const options = item.size
             ? `<p class="item-options">${escapeHtml(item.size)} · ${escapeHtml(item.sugar)} sugar</p>`
             : '';
 
         container.innerHTML += `
-            <div class="cart-item">
+            <div class="cart-item${unavailable ? ' is-unavailable' : ''}">
                 <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
                 <div class="item-info">
                     <p class="item-name">${escapeHtml(item.name)}</p>
                     ${options}
+                    ${unavailable ? '<p class="item-unavailable">No longer available. Please remove this item.</p>' : ''}
                     <p class="item-price">₱${item.price}</p>
                 </div>
                 <div class="item-actions">

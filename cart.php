@@ -86,6 +86,7 @@
     </main>
 
     <script src="js/orders-data.js"></script>
+    <script src="js/availability.js"></script>
     <script src="js/cart.js"></script>
 </body>
 

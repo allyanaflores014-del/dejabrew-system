@@ -3,8 +3,7 @@
 require_once __DIR__ . '/includes/functions.php';   // escape() + session
 require_once __DIR__ . '/includes/products.php';    // $products array
 
-// TODO: i-uncomment kapag na-merge na ang login branch
-// requireRole('staff');
+requireRole('staff');
 
 // Category slug (galing sa products.php) -> label na ipapakita
 $categoryLabels = [

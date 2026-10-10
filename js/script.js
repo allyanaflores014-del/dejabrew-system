@@ -103,6 +103,8 @@ const cards = document.querySelectorAll('.product-card');
 function openCard(card) {
     // Flip wins over hover: a flipped card never shows front controls.
     if (card.classList.contains('is-flipped')) return;
+    // Sold-out drinks (set by staff) don't expand.
+    if (card.classList.contains('is-sold-out')) return;
     card.classList.add('is-open');
 }
  
@@ -259,6 +261,8 @@ document.addEventListener('change', function (event) {
 });
  
 function addCardToCart(card) {
+    if (card.classList.contains('is-sold-out')) return;   // safety: never add a sold-out drink
+ 
     const sizeSelect  = card.querySelector('.size-select');
     const sugarSelect = card.querySelector('.sugar-select');
  
@@ -352,4 +356,3 @@ document.querySelectorAll('.series-btn').forEach(function (button) {
         goToProduct(button.dataset.productId);
     });
 });
- 

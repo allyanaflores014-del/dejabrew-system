@@ -16,7 +16,7 @@
  
     const SEEN_KEY      = 'dejabrewNotifsSeen';
     const FIRST_DELAY   = 1500;   // wait before the first message
-    const VISIBLE_TIME  = 7000;   // how long each message stays
+    const VISIBLE_TIME  = 9000;   // how long each message stays
     const RESUME_TIME   = 3000;   // time left after the mouse leaves a message
     const GAP_TIME      = 700;    // pause between two messages
     const SLIDE_OUT     = 500;    // must match the CSS transition

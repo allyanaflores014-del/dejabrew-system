@@ -5,7 +5,7 @@
         <nav aria-label="Main navigation">
             <ul class="nav-links">
                 <li><a href="index.php#menu">Menu</a></li>
-                <li><a href="receipt.php">My Orders</a></li>
+                <li><a href="receipt.php">My Activity</a></li>
                 <li>
                     <a href="cart.php" class="icon-link cart-link" aria-label="Cart">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
