@@ -1,7 +1,4 @@
-<?php
-require_once 'includes/functions.php';   
-requireRole('staff');
-?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,14 +16,12 @@ requireRole('staff');
 
 <body class="staff-body">
 
-<!-- One wrapper holds the top bar, the sidebar, and the main area -->
 <div class="staff-shell">
 
     <?php include __DIR__ . '/includes/staff-sidebar.php'; ?>
 
     <main class="staff-main">
 
-        <!-- MIDDLE: title, search, filters, order list -->
         <section class="orders-section">
 
             <div class="orders-heading">
@@ -43,7 +38,6 @@ requireRole('staff');
 
             <div class="orders-card">
 
-                <!-- Filter buttons -->
                 <div class="filter-pills" role="group" aria-label="Filter orders by status">
                     <button type="button" class="filter-pill is-active" data-status="all">All orders</button>
                     <button type="button" class="filter-pill" data-status="pending">Pending</button>
@@ -51,7 +45,6 @@ requireRole('staff');
                     <button type="button" class="filter-pill" data-status="completed">Completed</button>
                 </div>
 
-                <!-- Column titles -->
                 <div class="orders-table-head">
                     <span>Order #</span>
                     <span>Customer</span>
@@ -61,33 +54,19 @@ requireRole('staff');
                     <span>Status</span>
                 </div>
 
-                <!-- TEMPORARY sample row. -->
-                <div id="orders-list">
-                    <!-- <button type="button" class="order-row">
-                        <span class="row-id">#1008</span>
-                        <span>Jane Doe</span>
-                        <span>2 items</span>
-                        <span>₱265</span>
-                        <span>12:30 PM</span>
-                        <span class="row-end">
-                            <span class="status-badge status-pending">Pending</span>
-                            <span class="row-chevron">›</span>
-                        </span>
-                    </button>
-                </div> -->
+                <div id="orders-list"></div>
 
                 <p class="no-orders" id="no-orders" hidden>No orders found.</p>
             </div>
         </section>
 
-        <!-- RIGHT: details of the selected order (hidden until an order is clicked) -->
         <aside class="order-detail" id="order-detail" hidden>
 
             <div class="detail-content" id="detail-content">
 
-    <button type="button" class="detail-close" id="detail-close">← Back to orders</button>
+                <button type="button" class="detail-close" id="detail-close">← Back to orders</button>
 
-    <div class="detail-top">
+                <div class="detail-top">
                     <h2 id="detail-title">Order #1008</h2>
                     <span class="status-badge status-pending" id="detail-status">Pending</span>
                 </div>
@@ -107,7 +86,6 @@ requireRole('staff');
 
                 <h3 class="detail-heading">Items</h3>
                 <div class="detail-items" id="detail-items">
-                    <!-- SAMPLE ITEMS (JavaScript replaces these in Step 6) -->
                     <div class="detail-item">
                         <img src="assets/CaramelMacchiato.png" alt="">
                         <div>
