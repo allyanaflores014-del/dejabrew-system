@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DejaBrew | Cart</title>
-    <link rel="icon" type="image/png" href="assets/db-logo.png">
-
+   <link rel="icon" type="image/png" href="/dejabrew-system/assets/db-logo.png">
+<link rel="shortcut icon" href="/dejabrew-system/assets/db-logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -91,7 +91,8 @@
 
     </main>
 
-    <script src="js/cart.js"></script>
+    <script src="js/orders-data.js"></script>
+<script src="js/cart.js"></script>
 </body>
 
 </html>
