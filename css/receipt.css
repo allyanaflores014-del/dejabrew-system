@@ -107,14 +107,17 @@
    ========================================================= */
 
 .mo-drinks {
-  position: absolute;
+  /* fixed = sukat at pwesto ay batay sa window, hindi na sa haba ng page,
+     kaya hindi na gagalaw kahit humaba o umikli ang receipt */
+  position: fixed;
   z-index: 0;
 
-  left: -100%;
-  bottom: -30%;
+  /* same na itsura ng dati sa desktop (page height = window - navbar) */
+  left: -100vw;
+  bottom: calc(-0.3 * (100vh - var(--mo-nav-h)));
 
-  width: 300%;
-  height: 120%;
+  width: 300vw;
+  height: calc(1.2 * (100vh - var(--mo-nav-h)));
 
   object-fit: contain;
   object-position: center bottom;
@@ -313,6 +316,11 @@
 .mo-badge--cancelled {
   background: #e4e1de;
   color: #4a4540;
+}
+
+.mo-badge--pending {
+  background: #fdf0c8;
+  color: #7a5a00;
 }
 
 /* =========================================================
@@ -795,10 +803,10 @@
 .mo-none__icon {
   display: block;
 
-  width: 7rem;
+  width: 10rem;
   height: auto;
 
-  margin: 0 auto 2rem;
+  margin: 0 auto 1.5rem;
 }
 
 .mo-none__title {

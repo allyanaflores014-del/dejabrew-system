@@ -42,7 +42,7 @@ $pageUrl = basename($_SERVER['PHP_SELF']);
 
         <!-- NO ORDERS YET: same style as the empty cart page -->
         <section class="mo-none" id="mo-none" aria-labelledby="mo-none-title" hidden>
-            <svg class="mo-none__icon" viewBox="0 0 120 120" width="112" height="112" aria-hidden="true">
+            <img class="mo-none__icon" src="assets/dblogo.png" alt="DejaBrew logo" width="112" height="112">
                 <!-- placeholder cup: replace this <svg> with the same <img> the cart page uses -->
                 <ellipse cx="58" cy="70" rx="46" ry="42" fill="#c4b2de" />
                 <circle cx="96" cy="56" r="13" fill="none" stroke="#b9a5d8" stroke-width="9" />
