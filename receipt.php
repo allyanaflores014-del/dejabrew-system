@@ -6,6 +6,7 @@
 // Import: require_once loads functions.php for the helper functions like escape().
 // This also loads config.php and starts the session.
 require_once 'includes/functions.php';
+requireRole('customer');   // guests (and staff) are sent to login.php
 
 // Superglobal ($_GET): receipt.php?order=ID opens the receipt of that order.
 // The ?? operator makes it "" if there is no order in the URL.
@@ -35,7 +36,9 @@ $pageUrl = basename($_SERVER['PHP_SELF']);
     <link rel="icon" type="image/png" href="assets/db-logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/receipt.css">
 </head>
 
@@ -48,15 +51,13 @@ $pageUrl = basename($_SERVER['PHP_SELF']);
          and the receipts inside #mo-list and #mo-receipts.
          The PHP variables above are passed to the JavaScript using data- attributes.
          escape() makes the values safe to print in the HTML. -->
-    <main class="mo-page mo-page--empty" id="mo-page"
-        data-page-url="<?php echo escape($pageUrl); ?>"
-        data-initial-order="<?php echo escape($requestedId); ?>"
-        data-force-empty="<?php echo $forceEmpty; ?>">
+    <main class="mo-page mo-page--empty" id="mo-page" data-page-url="<?php echo escape($pageUrl); ?>"
+        data-initial-order="<?php echo escape($requestedId); ?>" data-force-empty="<?php echo $forceEmpty; ?>">
 
         <!-- No orders yet: looks the same as the empty cart page. It stays hidden until the JavaScript finds no orders. -->
         <section class="mo-none" id="mo-none" aria-labelledby="mo-none-title" hidden>
             <img class="mo-none__icon" src="assets/dblogo.png" alt="DejaBrew logo" width="112" height="112">
-            
+
             <h1 class="mo-none__title" id="mo-none-title">No orders yet</h1>
             <p class="mo-none__text">
                 Looks like you haven't placed an order yet.<br>
@@ -91,6 +92,10 @@ $pageUrl = basename($_SERVER['PHP_SELF']);
     </main>
 
     <!-- Same order as cart.php: orders-data.js first, then cart.js (cart count in the navbar), then receipt.js -->
+    <script>
+        // Who is logged in? (from the PHP session)
+        const LOGGED_IN_USER = <?= json_encode($_SESSION['user'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    </script>
     <script src="js/orders-data.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/receipt.js"></script>

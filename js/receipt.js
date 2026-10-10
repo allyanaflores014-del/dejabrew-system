@@ -189,11 +189,13 @@
     if (page.dataset.forceEmpty === "1") {
       return [];
     }
-    if (typeof getOrders !== "function") {
+        // Only the orders of the logged-in customer (LOGGED_IN_USER is printed by receipt.php)
+    var user = typeof LOGGED_IN_USER !== "undefined" ? LOGGED_IN_USER : null;
+    if (!user || typeof getOrdersForCustomer !== "function") {
       return [];
     }
 
-    var saved = getOrders();
+    var saved = getOrdersForCustomer(user.email);
     if (!Array.isArray(saved)) {
       return [];
     }

@@ -1,0 +1,354 @@
+/* =====================================================
+   DejaBrew - script.js (vanilla JavaScript, no libraries)
+ 
+   1. Helpers
+   2. Hero cups (title swap, click to go to the card)
+   3. Product card state: open (hover/tap) and flipped
+   4. Cart (quantity, price, add to cart)
+   5. Search + category filter
+   6. New Series banner button
+   ===================================================== */
+ 
+ 
+/* ---------- 1. Helpers ---------- */
+ 
+// True on phones/tablets where there is no mouse hover.
+function isTouchDevice() {
+    return window.matchMedia('(hover: none)').matches;
+}
+ 
+ 
+/* ---------- 2. Hero cups ---------- */
+/*
+ * The spotlight (bright cup, dim background) is pure CSS.
+ * JavaScript only changes the big title to match the cup you point at.
+ * Touch screens have no hover, so a tap lights the cup (class "is-lit").
+ */
+const heroCups  = document.querySelectorAll('.hero-cup');
+const heroTitle = document.getElementById('hero-title');
+ 
+// Fade the old title out, swap the text, fade the new one in.
+function setHeroTitle(text) {
+    if (heroTitle.textContent === text) return;
+ 
+    heroTitle.classList.add('is-changing');          // CSS fades it out
+    setTimeout(function () {
+        heroTitle.textContent = text;
+        heroTitle.classList.remove('is-changing');   // CSS fades it back in
+    }, 180);
+}
+ 
+function resetHeroTitle() {
+    setHeroTitle(heroTitle.dataset.default);
+}
+ 
+// Scroll to the product card that matches a hero cup (or the New Series button), then flash it.
+function goToProduct(productId) {
+    const slot = document.getElementById('product-' + productId);
+    if (!slot) return;
+ 
+    // If a search/category filter is hiding the card, clear the filters first.
+    if (slot.hidden) resetFilters();
+ 
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    slot.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+ 
+    // Restart the highlight animation (remove, force a reflow, add again).
+    const card = slot.querySelector('.product-card');
+    card.classList.remove('is-highlighted');
+    void card.offsetWidth;
+    card.classList.add('is-highlighted');
+    setTimeout(function () { card.classList.remove('is-highlighted'); }, 2000);
+}
+ 
+heroCups.forEach(function (cup) {
+    // Mouse
+    cup.addEventListener('pointerenter', function (event) {
+        if (event.pointerType === 'mouse') setHeroTitle(cup.dataset.title);
+    });
+    cup.addEventListener('pointerleave', function (event) {
+        if (event.pointerType === 'mouse') resetHeroTitle();
+    });
+ 
+    // Keyboard
+    cup.addEventListener('focus', function () {
+        if (cup.matches(':focus-visible')) setHeroTitle(cup.dataset.title);
+    });
+    cup.addEventListener('blur', resetHeroTitle);
+ 
+    // Click = go to this drink in the menu.
+    // Touch screens: first tap lights the cup (no hover on touch), second tap goes to the menu.
+    cup.addEventListener('click', function () {
+        if (isTouchDevice() && !cup.classList.contains('is-lit')) {
+            heroCups.forEach(function (c) { c.classList.remove('is-lit'); });
+            cup.classList.add('is-lit');
+            setHeroTitle(cup.dataset.title);
+            return;
+        }
+ 
+        goToProduct(cup.dataset.productId);
+    });
+});
+ 
+ 
+/* ---------- 3. Product card state ---------- */
+/*
+ * Every card has its own state, stored as CSS classes on that card only:
+ *   .is-open     -> "hovered" look (Add to Cart + size + sugar + quantity)
+ *   .is-flipped  -> showing the back
+ * Because each class lives on ONE card element, cards never affect each other.
+ */
+const cards = document.querySelectorAll('.product-card');
+ 
+function openCard(card) {
+    // Flip wins over hover: a flipped card never shows front controls.
+    if (card.classList.contains('is-flipped')) return;
+    card.classList.add('is-open');
+}
+ 
+function closeCard(card) {
+    card.classList.remove('is-open');
+}
+ 
+function closeAllCards(exceptCard) {
+    cards.forEach(function (card) {
+        if (card !== exceptCard) closeCard(card);
+    });
+}
+ 
+function flipToBack(card) {
+    card.classList.remove('is-open');   // clear the hover look first
+    card.classList.add('is-flipped');
+    card.querySelector('.back-btn').focus({ preventScroll: true });
+}
+ 
+function flipToFront(card) {
+    card.classList.remove('is-flipped');
+    if (card.matches(':hover')) openCard(card);  // mouse is still on it
+    card.querySelector('.info-btn').focus({ preventScroll: true });
+}
+ 
+// Mouse + keyboard "hover": each card listens for its own events.
+cards.forEach(function (card) {
+ 
+    // pointerType === 'mouse' ignores touch, which is handled by the click code below
+    card.addEventListener('pointerenter', function (event) {
+        if (event.pointerType === 'mouse') openCard(card);
+    });
+ 
+    card.addEventListener('pointerleave', function (event) {
+        if (event.pointerType === 'mouse') closeCard(card);
+    });
+ 
+    // Keyboard users: tabbing into the card opens it too.
+    card.addEventListener('focusin', function (event) {
+        if (event.target.matches(':focus-visible')) openCard(card);
+    });
+ 
+    card.addEventListener('focusout', function (event) {
+        const stillInside = card.contains(event.relatedTarget);
+        if (!stillInside && !card.matches(':hover')) closeCard(card);
+    });
+});
+ 
+/*
+ * One click listener handles every button (this is called "event delegation").
+ * event.target.closest(...) tells us what was clicked.
+ * Each branch ends with "return", so clicking the info button can never
+ * fall through to the add-to-cart code.
+ */
+document.addEventListener('click', function (event) {
+    const card = event.target.closest('.product-card');
+ 
+    // Tapped outside every card on a touch screen: close any open card.
+    if (!card) {
+        if (isTouchDevice()) closeAllCards(null);
+        return;
+    }
+ 
+    // 1) The card is showing its back: a click ANYWHERE on it flips it to the front.
+    //    (The front face is hidden while flipped, so only the back can be clicked.)
+    if (card.classList.contains('is-flipped')) {
+        flipToFront(card);
+        return;
+    }
+ 
+    // 2) Info button -> flip to the back
+    if (event.target.closest('.info-btn')) {
+        flipToBack(card);
+        return;
+    }
+ 
+    // 3) Quantity - and + buttons
+    const qtyButton = event.target.closest('.card-qty-btn');
+    if (qtyButton) {
+        const change = qtyButton.classList.contains('card-qty-plus') ? 1 : -1;
+        const newQty = Math.min(MAX_QTY, Math.max(1, getCardQty(card) + change));
+        setCardQty(card, newQty);
+        return;
+    }
+ 
+    // 4) Add button
+    if (event.target.closest('.add-btn')) {
+        // On touch, the first tap only reveals the controls; the next tap adds.
+        if (isTouchDevice() && !card.classList.contains('is-open')) {
+            closeAllCards(card);
+            openCard(card);
+            return;
+        }
+        addCardToCart(card);
+        return;
+    }
+ 
+    // 5) Using the dropdowns should not toggle the card.
+    if (event.target.closest('select, label')) return;
+ 
+    // 6) Touch only: tapping the card toggles the controls.
+    if (isTouchDevice()) {
+        if (card.classList.contains('is-open')) {
+            closeCard(card);
+        } else {
+            closeAllCards(card);
+            openCard(card);
+        }
+    }
+});
+ 
+ 
+/* ---------- 4. Cart ---------- */
+/*
+ * The cart itself lives in cart.js (saved in localStorage) so the cart page can read it.
+ * Here we collect the choices from the card and call addToCart() from cart.js.
+ *
+ * Price rule: data-price on the card = SMALL price.
+ * Each <option> in the size dropdown has data-extra (0, 15, 30).
+ * unit price = small price + extra       total = unit price x quantity
+ */
+const MAX_QTY = 20;
+ 
+const toast = document.getElementById('toast');
+let toastTimer;
+ 
+function getCardQty(card) {
+    return Number(card.querySelector('.card-qty-value').textContent);
+}
+ 
+function getCardUnitPrice(card) {
+    const sizeSelect = card.querySelector('.size-select');
+    const extra = Number(sizeSelect.options[sizeSelect.selectedIndex].dataset.extra) || 0;
+    return Number(card.dataset.price) + extra;
+}
+ 
+// Updates "Total Amount: P..." on the card.
+function updateCardTotal(card) {
+    const total = getCardUnitPrice(card) * getCardQty(card);
+    card.querySelector('.card-total-value').textContent =
+        '₱' + total.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+ 
+function setCardQty(card, qty) {
+    card.querySelector('.card-qty-value').textContent = qty;
+    updateCardTotal(card);
+}
+ 
+// Changing the size changes the price.
+document.addEventListener('change', function (event) {
+    if (event.target.matches('.size-select')) {
+        updateCardTotal(event.target.closest('.product-card'));
+    }
+});
+ 
+function addCardToCart(card) {
+    const sizeSelect  = card.querySelector('.size-select');
+    const sugarSelect = card.querySelector('.sugar-select');
+ 
+    const size     = sizeSelect.options[sizeSelect.selectedIndex].text.trim();   // e.g. "Medium 16oz"
+    const sugar    = sugarSelect.value;                                           // e.g. "50%"
+    const quantity = getCardQty(card);
+ 
+    const product = {
+        id:    card.dataset.productId + '|' + size + '|' + sugar,   // same drink + same options = same item
+        name:  card.dataset.productName,
+        price: getCardUnitPrice(card),                              // price of ONE drink in this size
+        image: card.dataset.image,
+        size:  size,
+        sugar: sugar
+    };
+ 
+    // addToCart() (from cart.js) adds one drink per call, so call it once per quantity.
+    for (let i = 0; i < quantity; i++) {
+        addToCart(product);
+    }
+ 
+    showToast((quantity > 1 ? quantity + ' x ' : '') + product.name + ' added to cart');
+ 
+    setCardQty(card, 1);   // reset the card for the next order
+}
+ 
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+ 
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+        toast.classList.remove('is-visible');
+    }, 2000);
+}
+ 
+ 
+/* ---------- 5. Search + category filter ---------- */
+const searchInput   = document.getElementById('search-input');
+const filterButtons = document.querySelectorAll('.filter-btn');
+const slots         = document.querySelectorAll('.product-slot');
+const noResults     = document.getElementById('no-results');
+ 
+let activeCategory = 'all';
+ 
+function applyFilters() {
+    const searchText = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+ 
+    slots.forEach(function (slot) {
+        const matchesCategory = activeCategory === 'all' || slot.dataset.category === activeCategory;
+        const matchesSearch   = slot.dataset.name.toLowerCase().includes(searchText);
+ 
+        slot.hidden = !(matchesCategory && matchesSearch);
+        if (!slot.hidden) visibleCount++;
+    });
+ 
+    noResults.hidden = visibleCount > 0;
+}
+ 
+searchInput.addEventListener('input', applyFilters);
+ 
+filterButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+        activeCategory = button.dataset.category;
+ 
+        filterButtons.forEach(function (b) { b.classList.remove('is-active'); });
+        button.classList.add('is-active');
+ 
+        applyFilters();
+    });
+});
+ 
+// Clears the search box and goes back to the "All" category.
+function resetFilters() {
+    searchInput.value = '';
+    activeCategory = 'all';
+ 
+    filterButtons.forEach(function (button) {
+        button.classList.toggle('is-active', button.dataset.category === 'all');
+    });
+ 
+    applyFilters();
+}
+ 
+ 
+/* ---------- 6. New Series banner button ---------- */
+// "Add to Cart" on the banner scrolls up to that drink's card in the menu.
+document.querySelectorAll('.series-btn').forEach(function (button) {
+    button.addEventListener('click', function () {
+        goToProduct(button.dataset.productId);
+    });
+});

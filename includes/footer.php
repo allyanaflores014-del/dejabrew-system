@@ -24,7 +24,7 @@
                 <h2 class="footer-heading">Quick Links</h2>
                 <ul class="footer-list">
                     <li><a href="index.php#menu">Menu</a></li>
-                    <li><a href="#">My Activity</a></li>
+                    <li><a href="receipt.php">My Activity</a></li>
                     <li><a href="cart.php">Cart</a></li>
                 </ul>
             </nav>

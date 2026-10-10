@@ -18,6 +18,8 @@ $success = "";
 // Superglobal ($_GET): reads the "action" in the URL, like login.php?action=logout.
 // The ?? operator makes it "" if there is no action in the URL.
 $action = $_GET['action'] ?? "";
+// "next" = where to go after login. Only "cart" is allowed, so users can't be sent to other sites.
+$next = ($_GET['next'] ?? "") === "cart" ? "cart" : "";
 
 // Control structure (switch): decides what to do depending on the value of $action.
 switch ($action) {
@@ -33,6 +35,10 @@ switch ($action) {
     if (isLoggedIn() && $_SERVER['REQUEST_METHOD'] !== 'POST') {
       $success = "You're already signed in as " . ucfirst($_SESSION['user']['username']) . ".";
     }
+}
+
+if ($next === "cart" && !isLoggedIn() && $success === "") {
+  $success = "Please sign in to place your order.";
 }
 
 // Superglobals ($_SERVER and $_POST): this block only runs when the Sign In button is clicked.
@@ -57,13 +63,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
       // Look for the account with this email. It gives null if there is none.
       $account = findAccount($email);
 
-            // password_verify() compares the typed password with the hashed password that was saved.
-            if ($account !== null && password_verify($password, $account['password'])) {
+      // password_verify() compares the typed password with the hashed password that was saved.
+      if ($account !== null && password_verify($password, $account['password'])) {
         // Correct login: reset the failed attempts, save the user in the session,
         // then go to the right home page (staff and customer have different pages).
         resetAttempts();
         loginUser($account);
-        header("Location: " . getHomePage($account['role'] ?? 'customer'));
+        $destination = getHomePage($account['role'] ?? 'customer');
+        if ($next === "cart" && ($account['role'] ?? 'customer') === 'customer') {
+          $destination = "cart.php";
+        }
+        header("Location: " . $destination);
         exit;
       } else {
         // Wrong email or password, so count it as a failed attempt.
@@ -91,7 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
   <link rel="icon" type="image/png" href="assets/db-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="css/login.css">
 </head>
 
@@ -105,11 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     <!-- Decorative images on the left side. aria-hidden so screen readers skip them -->
     <div class="visual" aria-hidden="true">
       <img class="table" src="login_assets/images/table.png" alt="">
-      <img
-        class="curve"
-        src="login_assets/images/curve.png"
-        alt=""
-        aria-hidden="true">
+      <img class="curve" src="login_assets/images/curve.png" alt="" aria-hidden="true">
       <img class="drinks" src="login_assets/images/drinksdesign.png" alt="">
     </div>
     <section class="panel">
@@ -124,18 +132,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
       <?php endif; ?>
 
       <!-- The form sends its data with POST to this same page (login.php) -->
-      <form method="post" action="login.php" novalidate>
+      <form method="post" action="login.php<?php echo $next === 'cart' ? '?next=cart' : ''; ?>" novalidate>
         <div class="field">
           <label for="email">Email</label>
           <div class="input-wrap icon-mail">
             <!-- value puts back what the user typed so it is not erased when there is an error -->
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              value="<?php echo escape($email); ?>"
-              autocomplete="email">
+            <input type="email" id="email" name="email" placeholder="Enter your email"
+              value="<?php echo escape($email); ?>" autocomplete="email">
           </div>
           <!-- Shows the email error (empty if there is none) -->
           <p class="error"><?php echo escape($emailError); ?></p>
@@ -143,9 +146,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         <div class="field">
           <label for="password">Password</label>
           <div class="input-wrap icon-lock">
-            <input class="has-toggle" type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password">
+            <input class="has-toggle" type="password" id="password" name="password" placeholder="Enter your password"
+              autocomplete="current-password">
             <!-- The eye button shows or hides the password (the code is in js/login.js) -->
-            <button type="button" class="toggle" data-target="password" aria-label="Show password"><img src="login_assets/eye.svg" alt="" width="20" height="20"></button>
+            <button type="button" class="toggle" data-target="password" aria-label="Show password"><img
+                src="login_assets/eye.svg" alt="" width="20" height="20"></button>
           </div>
           <!-- Shows the password error or the attempt limit message -->
           <p class="error"><?php echo escape($passwordError); ?></p>

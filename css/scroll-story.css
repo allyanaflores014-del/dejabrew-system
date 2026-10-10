@@ -33,7 +33,7 @@
     position: absolute;
     inset: 0;
     opacity: 0;
-    visibility: hidden;       /* hidden slides can't be clicked or tabbed to */
+    visibility: hidden;       
 }
  
 .story-slide:first-child { opacity: 1; visibility: visible; }
@@ -68,13 +68,12 @@
     width: auto;
     max-width: 48%;
     object-fit: contain;
-    object-position: bottom;
+    object-position: left bottom;
     filter: drop-shadow(0 20px 24px rgba(0, 0, 0, 0.45));
     transform: rotate(-3deg);
 }
 
  
-/* JS fades and nudges this layer. Layout is done with flexbox. */
 .story-content {
     
     position: absolute;
@@ -117,7 +116,7 @@
 .story-btn:hover { background: var(--tan); transform: translateY(-2px); }
 .story-btn:focus-visible { outline-color: #ffffff; outline-offset: 4px; }
  
-/* ---------- Mobile: cup on top, text underneath ---------- */
+/* ---------- Mobile---------- */
 @media (max-width: 700px) {
     .story-cup {
         left: 50%;
@@ -137,7 +136,7 @@
     }
 }
  
-/* ---------- Reduced motion: no pinning, no zoom, slides just stack ---------- */
+/* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
     .scroll-story { height: auto; }
  
