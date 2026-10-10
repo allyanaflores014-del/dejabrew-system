@@ -84,8 +84,14 @@ g
 }
 
 .empty-illustration {
-    font-size: 7rem;
     margin-bottom: 20px;
+}
+
+.empty-illustration img {
+    display: block;
+    width: 180px;       /* change this number to make the logo bigger or smaller */
+    max-width: 60%;
+    height: auto;       /* keeps the logo's proportions */
 }
 
 .empty-cart h2 {
@@ -464,8 +470,8 @@ g
     }
 
 
-    .empty-illustration {
-        font-size: 5rem;
+        .empty-illustration img {
+        width: 130px;
     }
 
 

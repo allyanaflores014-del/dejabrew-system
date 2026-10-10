@@ -82,8 +82,10 @@
         <aside class="order-detail" id="order-detail" hidden>
 
             <div class="detail-content" id="detail-content">
-            
-                <div class="detail-top">
+
+    <button type="button" class="detail-close" id="detail-close">← Back to orders</button>
+
+    <div class="detail-top">
                     <h2 id="detail-title">Order #1008</h2>
                     <span class="status-badge status-pending" id="detail-status">Pending</span>
                 </div>

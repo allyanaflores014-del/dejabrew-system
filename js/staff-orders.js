@@ -339,6 +339,17 @@ searchInput.addEventListener('input', function () {
     refreshList();
 });
 
+// ========== "BACK TO ORDERS" BUTTON AND ESC KEY ==========
+const closeButton = document.getElementById('detail-close');
+if (closeButton) {
+    closeButton.addEventListener('click', closeDetail);
+}
 
+// Pressing Esc also closes the panel
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && selectedOrderId !== null) {
+        closeDetail();
+    }
+});
 // ========== 10. WHEN THE PAGE LOADS ==========
 renderOrders();
