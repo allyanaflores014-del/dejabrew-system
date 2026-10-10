@@ -1091,3 +1091,94 @@ a:focus-visible {
         margin-top: 0.59vw;
     }
 }
+
+/* =========================================================
+   NAVBAR (same as Menu and My Orders pages)
+   ========================================================= */
+
+:root {
+    --header-height: 61.6px;
+}
+
+@media (max-width: 700px) {
+    :root {
+        --header-height: 52.8px;
+    }
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    width: 100%;
+    height: var(--header-height);
+
+    background: #ffffff;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+    color: #24160f;
+
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    height: 100%;
+    padding: 0 clamp(16px, 4vw, 48px);
+}
+
+.navbar-logo {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 22.4px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #24160f;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 2.5vw, 28px);
+    list-style: none;
+}
+
+.icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: auto;
+    height: auto;
+
+    color: #24160f;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.icon-link:hover {
+    color: #a8764c;
+}
+
+.icon-link svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 700px) {
+    .navbar-inner {
+        padding: 0 16px;
+    }
+
+    .navbar-logo {
+        font-size: 19.2px;
+    }
+}
