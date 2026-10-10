@@ -1,12 +1,13 @@
 <?php
-// Shared helper functions for login.php and signup.php.
-// Each validate function returns "" when the value is OK,
-// or an error message when it is not.
+// functions.php
+// Functions used by login.php and signup.php.
+// The validate functions return "" if the input is okay, or an error message if not.
 
-// Import: settings + session start (require = file is essential)
+// Import: loads the settings and starts the session.
+// I used require_once because the system can't work without config.php.
 require_once __DIR__ . '/config.php';
 
-// Makes user text safe to print back into the page (uses str_replace).
+// Replaces the special characters in the text so user input can't break the HTML.
 function escape($text) {
     $text = str_replace("&", "&amp;", $text);
     $text = str_replace("<", "&lt;", $text);
@@ -15,6 +16,7 @@ function escape($text) {
     return $text;
 }
 
+// Username must not be empty, must be 3 to 20 characters, and has no spaces.
 function validateUsername($username) {
     if (strlen($username) === 0) {
         return "Please enter a username.";
@@ -27,11 +29,12 @@ function validateUsername($username) {
     }
 }
 
+// Checks the email format by hand: one "@", something before it, and a domain with a dot.
 function validateEmail($email) {
     if (strlen($email) === 0) {
         return "Please enter your email.";
     }
-    $parts = explode("@", $email);   // "juan@mail.com" -> ["juan", "mail.com"]
+    $parts = explode("@", $email);   // example: "juan@mail.com" becomes ["juan", "mail.com"]
     if (count($parts) !== 2 || strlen($parts[0]) === 0) {
         return "Email must look like name@example.com.";
     } elseif (strpos($email, " ") !== false) {
@@ -45,6 +48,7 @@ function validateEmail($email) {
     }
 }
 
+// Password must not be empty and must have at least 8 characters.
 function validatePassword($password) {
     if (strlen($password) === 0) {
         return "Please enter a password.";
@@ -55,6 +59,7 @@ function validatePassword($password) {
     }
 }
 
+// Checks that the confirm password is not empty and is the same as the password.
 function validateConfirm($password, $confirm) {
     if (strlen($confirm) === 0) {
         return "Please confirm your password.";
@@ -66,10 +71,11 @@ function validateConfirm($password, $confirm) {
 }
 
 // ---------------------------------------------------------
-// ACCOUNT FUNCTIONS (accounts are kept in $_SESSION for now)
+// Account functions
+// For now the accounts are saved in $_SESSION since we don't have a database yet.
 // ---------------------------------------------------------
 
-// Returns the list of registered accounts (empty list if none yet).
+// Gets the list of registered accounts. If there is none yet, it gives an empty list.
 function getAccounts() {
     if (!isset($_SESSION['accounts'])) {
         $_SESSION['accounts'] = [];
@@ -77,8 +83,8 @@ function getAccounts() {
     return $_SESSION['accounts'];
 }
 
-// Looks for an account by email (staff list first, then signed-up customers).
-// Returns the account array, or null if not found.
+// Finds an account using the email. It checks the staff accounts first, then the customers who signed up.
+// Returns the account array, or null if there is no match.
 function findAccount($email) {
     $email = strtolower($email);
 
@@ -101,7 +107,7 @@ function findAccount($email) {
     return null;
 }
 
-// Saves a new customer account. The password is hashed, never stored as plain text.
+// Saves a new customer account. The password is hashed so it is not saved as plain text.
 function registerAccount($username, $email, $password) {
     $accounts = getAccounts();
     $accounts[] = [
@@ -113,7 +119,8 @@ function registerAccount($username, $email, $password) {
     $_SESSION['accounts'] = $accounts;
 }
 
-// Marks the user as logged in by saving them (and their role) in the session.
+// Logs the user in by saving their username, email, and role in the session.
+// session_regenerate_id() gives a new session id after login for safety.
 function loginUser($account) {
     session_regenerate_id(true);
     $_SESSION['user'] = [
@@ -123,7 +130,9 @@ function loginUser($account) {
     ];
 }
 
-// Rates a password as Weak, Medium, or Strong using a simple score.
+// Gives the password a score, then returns Weak, Medium, or Strong.
+// One point each for: 8+ characters, 12+ characters, has a number,
+// has lowercase and uppercase, and has a special character.
 function getPasswordStrength($password) {
     $score = 0;
     if (strlen($password) >= 8) {
@@ -155,12 +164,12 @@ function getPasswordStrength($password) {
 }
 
 // ---------------------------------------------------------
-// LOGIN FUNCTIONS
+// Login functions
 // ---------------------------------------------------------
 
-// Returns a greeting that depends on the current time of day.
+// Returns a greeting based on the current hour (morning, afternoon, or evening).
 function getGreeting() {
-    $hour = (int) date("G");   // 0-23
+    $hour = (int) date("G");   // hour in 24-hour format, 0 to 23
     if ($hour < 12) {
         return "Good morning";
     } elseif ($hour < 18) {
@@ -170,24 +179,24 @@ function getGreeting() {
     }
 }
 
-// True while the user is locked out after too many wrong attempts.
+// Returns true if the user is still locked out because of too many wrong attempts.
 function isLockedOut() {
     $attempts = $_SESSION['attempts'] ?? 0;
     $lockedUntil = $_SESSION['locked_until'] ?? 0;
 
     if ($attempts >= MAX_ATTEMPTS && time() >= $lockedUntil) {
-        resetAttempts();   // lockout is over, start fresh
+        resetAttempts();   // the waiting time is done, so the attempts start again from 0
         return false;
     }
     return $attempts >= MAX_ATTEMPTS;
 }
 
-// How many seconds are left before the lockout ends.
+// Returns how many seconds are left before the user can try again.
 function secondsLeft() {
     return max(0, ($_SESSION['locked_until'] ?? 0) - time());
 }
 
-// Adds one failed attempt and starts the lockout when the limit is reached.
+// Adds 1 to the failed attempts. When it reaches the limit, the lockout timer starts.
 function recordFailedAttempt() {
     $_SESSION['attempts'] = ($_SESSION['attempts'] ?? 0) + 1;
     if ($_SESSION['attempts'] >= MAX_ATTEMPTS) {
@@ -195,7 +204,7 @@ function recordFailedAttempt() {
     }
 }
 
-// Clears the failed attempt counter (after a successful login or finished lockout).
+// Sets the failed attempts back to 0. Used after a successful login or when the lockout ends.
 function resetAttempts() {
     $_SESSION['attempts'] = 0;
     $_SESSION['locked_until'] = 0;
@@ -203,24 +212,24 @@ function resetAttempts() {
 
 
 
-// Removes the logged-in user from the session.
+// Logs the user out by removing them from the session.
 function logoutUser() {
     unset($_SESSION['user']);
 }
 
-// True if someone is currently logged in.
+// Returns true if there is a user logged in.
 function isLoggedIn() {
     return isset($_SESSION['user']);
 }
 
 
-// Returns the logged-in user's role: "staff", "customer", or "guest" if not logged in.
+// Returns the role of the logged-in user: "staff" or "customer". If nobody is logged in, it returns "guest".
 function getRole() {
     return $_SESSION['user']['role'] ?? "guest";
 }
 
-// Put this at the top of a protected page. Sends the visitor back to login
-// if their role does not match.
+// For protected pages: put this at the top of the page.
+// If the visitor's role is not the one needed, they are sent back to login.php.
 function requireRole($role) {
     if (getRole() !== $role) {
         header("Location: login.php");
@@ -228,12 +237,12 @@ function requireRole($role) {
     }
 }
 
-// Returns the page each role should land on after logging in.
+// Returns which page the user goes to after logging in, depending on the role.
 function getHomePage($role) {
     switch ($role) {
         case "staff":
-            return "staff-dashboard.php";   // <-- change to your real staff page
+            return "staff-dashboard.php";   // staff goes to the staff page
         default:
-            return "index.php";             // <-- change to your real customer page
+            return "index.php";             // customers go to the home page
     }
 }

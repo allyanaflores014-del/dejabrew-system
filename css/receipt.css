@@ -1,42 +1,33 @@
-/* =========================================================
-   DEJABREW - RECEIPT (order history + receipt)
-   Loaded ONLY by receipt.php. Every class starts with "mo-"
-   so nothing here can affect the other pages.
-   All sizes use rem so the page scales with browser zoom.
-   ========================================================= */
+/* receipt.css
+   Styles for the My Orders / Receipt page. Only receipt.php uses this file.
+   All the class names start with "mo-" so they don't affect the other pages.
+   The sizes are in rem so the page scales when the browser is zoomed. */
 
 :root {
   --cream: #f9f1e6; /* page background */
   --white: #ffffff;
   --ink: #24160f; /* dark brown, almost black */
-  --brown: #a8764c; /* active filter pill, accents */
-  --tan: #dfc4ae; /* card background while hovered */
-  --caramel: #b07a50; /* card back */
-  --shadow: 0 6px 18px rgba(60, 35, 15, 0.12);
-
-  --font-body: "Poppins", system-ui, sans-serif;
-  --font-script: "Allura", "Brush Script MT", cursive;
-  --font-logo: "Playfair Display", Georgia, serif;
+  --caramel: #b07a50;
 
   --mo-dark: var(--ink);
   --mo-cream: var(--cream);
   --mo-muted: #78685d;
   --mo-line: #cbb8a6;
-  /* button + selected-card ring: the darker caramel (the light --tan made
-     the Download button look faded and hard to read) */
+  /* Color of the buttons and the selected card ring. I used the darker caramel
+     because a lighter tan made the Download button hard to read. */
   --mo-tan: var(--caramel);
   --mo-tan-hover: #9c6c44;
 
-  /* real height of the navbar (same as the Menu page: 14px + logo line + 14px).
-     Fixed in px on purpose so it does NOT shrink with this page's rem scaling. */
+  /* Height of the navbar, same as the Menu page (14px + logo line + 14px).
+     It is in px so it doesn't shrink with the rem scaling of this page. */
   --mo-nav-h: 61.6px;
 
-  /* receipt paper height: the SAME for every order so the page never jumps.
-       Orders with many items grow past it automatically. */
+  /* Height of the receipt paper. It is the same for every order so the page doesn't jump.
+     If an order has many items, the receipt grows taller than this. */
   --mo-receipt-h: 42rem;
 }
 
-/* phone navbar is shorter (see the navbar block at the bottom) */
+/* The navbar is shorter on phones (see the navbar part at the bottom) */
 @media (max-width: 700px) {
   :root {
     --mo-nav-h: 52.8px;
@@ -49,26 +40,24 @@
   box-sizing: border-box;
 }
 
-/* Desktop: scale the page so the navbar + both columns fit the window height
-   without scrolling (like login / sign-up). The 12px floor keeps text
-   readable; zooming in still makes things bigger (then the page scrolls). */
+/* Desktop: the font size depends on the window height so the navbar and both columns
+   fit without scrolling, like the login and sign up pages. The 12px minimum keeps the text readable.
+   If the user zooms in, the page scrolls instead. */
 @media (min-width: 901px) {
   html {
     font-size: clamp(12px, calc((100vh - var(--mo-nav-h)) / 46), 16px);
   }
 }
 
-/* Very wide screens / zoom 50% or lower: grow with the screen
-   (but never taller than the window). */
+/* Very wide screens (zoom 50% or lower): grows with the screen width,
+   but it is never taller than the window. */
 @media (min-width: 1700px) {
   html {
     font-size: min(0.941vw, calc((100vh - var(--mo-nav-h)) / 46));
   }
 }
 
-/* =========================================================
-   PAGE
-   ========================================================= */
+/* Page */
 
 .mo-body {
   margin: 0;
@@ -84,11 +73,11 @@
 .mo-page {
   position: relative;
   display: flex;
-  /* content starts at the top, so new orders only add space at the BOTTOM */
+  /* Content starts at the top so new orders only add space at the bottom */
   align-items: flex-start;
 
   width: 100%;
-  /* fills the window under the navbar; grows only if the content is taller */
+  /* Fills the window under the navbar, and only grows if the content is taller */
   min-height: calc(100vh - var(--mo-nav-h));
   min-height: calc(100dvh - var(--mo-nav-h));
 
@@ -98,21 +87,19 @@
   background-color: var(--mo-cream);
 }
 
-/* =========================================================
-   BACKGROUND DRINKS (separate image)
-   Change these values to resize / move it:
-   - width + height  = size of the box the image fits into
-   - left + bottom   = where that box sits
-   - object-position = where the drinks sit inside the box
-   ========================================================= */
+/* Background drinks image (decoration only)
+   To resize or move it, change these:
+   - width and height: size of the box the image fits in
+   - left and bottom: where the box is placed
+   - object-position: where the drinks sit inside the box */
 
 .mo-drinks {
-  /* fixed = sukat at pwesto ay batay sa window, hindi na sa haba ng page,
-     kaya hindi na gagalaw kahit humaba o umikli ang receipt */
+  /* It is fixed, so its size and position follow the window and not the page length.
+     That way it doesn't move when the receipt gets longer or shorter. */
   position: fixed;
   z-index: 0;
 
-  /* same na itsura ng dati sa desktop (page height = window - navbar) */
+  /* Looks the same as before on desktop (page height = window height minus navbar) */
   left: -100vw;
   bottom: calc(-0.3 * (100vh - var(--mo-nav-h)));
 
@@ -134,7 +121,7 @@
 
   display: grid;
   grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
-  /* both columns start at the top; the left list grows downward */
+  /* Both columns start at the top, and the order list grows downward */
   align-items: start;
   column-gap: clamp(2rem, 5vw, 5rem);
 
@@ -143,11 +130,9 @@
   margin: 0 auto;
 }
 
-/* =========================================================
-   LEFT: HEADING + ORDER LIST
-   ========================================================= */
+/* Left side: heading and order list */
 
-/* fixed space above "My Orders" (heading stays put when orders are added) */
+/* Fixed space above "My Orders" so the heading stays in place when orders are added */
 .mo-orders {
   padding-top: 3.5rem;
 }
@@ -181,7 +166,7 @@
   list-style: none;
 }
 
-/* ---------- order card ---------- */
+/* Order card */
 
 .mo-card {
   display: flex;
@@ -209,7 +194,7 @@
   box-shadow: 0 0.4rem 1.1rem rgba(44, 31, 27, 0.18);
 }
 
-/* Selected order: dark border + the tan ring (same look as the keyboard focus ring) */
+/* Selected order: dark border plus the tan ring (same as the keyboard focus ring) */
 .mo-card.is-selected {
   border-color: var(--mo-dark);
 
@@ -276,7 +261,7 @@
   color: var(--mo-muted);
 }
 
-/* ---------- status badges ---------- */
+/* Order status badges */
 
 .mo-badge {
   display: inline-flex;
@@ -323,18 +308,16 @@
   color: #7a5a00;
 }
 
-/* =========================================================
-   RIGHT: RECEIPT
-   ========================================================= */
+/* Right side: receipt */
 
 .mo-receipt-wrap {
   display: flex;
   justify-content: center;
 }
 
-/* One fixed paper size for every order. The items area stretches to fill
-   the paper, so Payment Summary, Total and the button always sit in the
-   same place (no jumping when an order has fewer items). */
+/* The receipt paper has the same size for every order. The items area stretches to fill it,
+   so the Payment Summary, Total, and button are always in the same place
+   even if an order has fewer items. */
 .mo-receipt {
   display: flex;
   flex-direction: column;
@@ -342,11 +325,11 @@
   width: 100%;
   min-height: var(--mo-receipt-h);
 
-  /* side padding is a % of the receipt width so the text always stays
-       inside the torn-paper edges at any size */
+  /* The side padding is a percentage of the receipt width so the text
+     stays inside the torn paper edges at any size */
   padding: 3rem 20% 3rem;
 
-  /* when a receipt is scrolled into view on phones, keep it below the navbar */
+  /* On phones, when the receipt is scrolled into view, keep it below the navbar */
   scroll-margin-top: calc(var(--mo-nav-h) + 1rem);
 
   background-image: url("../receipt_assets/receipt.png");
@@ -357,7 +340,7 @@
   color: var(--mo-dark);
 }
 
-/* the hidden attribute must win over the display rules of this page */
+/* Makes sure the hidden attribute works even with the display rules above */
 .mo-receipt[hidden] {
   display: none;
 }
@@ -387,7 +370,7 @@
   line-height: 1.1;
 }
 
-/* every block of the receipt uses the same spacing above and below its dashed line */
+/* Each part of the receipt has the same space above and below its dashed line */
 .mo-receipt__section {
   margin-top: 0.8rem;
   padding-top: 0.8rem;
@@ -395,7 +378,7 @@
   border-top: 1px dashed var(--mo-line);
 }
 
-/* the items block takes all the leftover height of the paper */
+/* The items part takes the leftover height of the paper */
 .mo-receipt__section:has(> .mo-items) {
   flex: 1;
 }
@@ -450,7 +433,7 @@
   letter-spacing: 0.02em;
 }
 
-/* ---------- items ---------- */
+/* Items in the receipt */
 
 .mo-items {
   display: flex;
@@ -507,7 +490,7 @@
   white-space: nowrap;
 }
 
-/* ---------- payment summary ---------- */
+/* Payment summary */
 
 .mo-summary {
   margin: 0;
@@ -556,7 +539,7 @@
   white-space: nowrap;
 }
 
-/* ---------- download button ---------- */
+/* Download button */
 
 .mo-download {
   display: flex;
@@ -599,9 +582,7 @@
   outline-offset: 2px;
 }
 
-/* =========================================================
-   TABLET + PHONE: orders on top, receipt below
-   ========================================================= */
+/* Tablet and phone: orders on top, receipt below */
 
 @media (max-width: 900px) {
   .mo-page {
@@ -630,8 +611,8 @@
     font-size: 0.9rem;
   }
 
-  /* the drinks box is sized for desktop; on a tall stacked page keep it
-       to the bottom part of the page */
+  /* The drinks box is made for desktop. On the long stacked page,
+     keep it at the bottom part only. */
   .mo-drinks {
     left: -20%;
     bottom: 0;
@@ -641,9 +622,7 @@
   }
 }
 
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
+/* Small phones */
 
 @media (max-width: 480px) {
   .mo-card {
@@ -671,9 +650,7 @@
   }
 }
 
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
+/* For users who turn off animations in their device settings */
 
 @media (prefers-reduced-motion: reduce) {
   .mo-card,
@@ -687,12 +664,10 @@
 }
 
 
-/* =====================================================
-   RECEIPT PAGE NAVBAR
-   Same look as the Menu page navbar (copied from the VALUES in
-   css/style.css; that file is not touched). Sizes are in px on
-   purpose, so the navbar does not shrink with this page's rem scaling.
-   ===================================================== */
+/* Navbar for the receipt page
+   Same look as the navbar in the Menu page. I copied the values from css/style.css
+   but did not change that file. The sizes are in px so the navbar
+   doesn't shrink with the rem scaling of this page. */
 
 .mo-body .navbar {
   position: sticky;
@@ -782,10 +757,8 @@
 }
 
 
-/* =========================================================
-   NO ORDERS YET (same style as the empty cart page)
-   Shown when the user has no order history.
-   ========================================================= */
+/* "No orders yet" page
+   Same style as the empty cart page. It shows when the user has no order history. */
 
 .mo-page--empty {
   align-items: center; /* stays centered on phones too */
@@ -871,17 +844,15 @@
 }
 
 
-/* =========================================================
-   SHOW / HIDE BETWEEN "ORDERS" AND "NO ORDERS YET"
-   (receipt.js switches these with the hidden attribute)
-   ========================================================= */
+/* Switching between "orders" and "no orders yet"
+   receipt.js uses the hidden attribute to show one and hide the other */
 
 .mo-layout[hidden],
 .mo-none[hidden] {
   display: none;
 }
 
-/* the empty page is plain cream, like the empty cart */
+/* The empty page has a plain cream background, like the empty cart */
 .mo-page--empty .mo-drinks {
   display: none;
 }

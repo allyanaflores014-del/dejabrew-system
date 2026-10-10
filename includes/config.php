@@ -1,18 +1,24 @@
 <?php
-// Shared settings for the auth pages. Loaded by functions.php.
+// config.php
+// Settings for the login and sign-up system. This is loaded by includes/functions.php,
+// so any page that imports functions.php also gets these settings.
 
-// Start the session once (it stores accounts, login state, and attempt counter).
+// Start the session only if there is none yet. session_status() checks this so
+// we don't call session_start() twice and get a warning.
+// The session keeps the accounts, the login state, and the failed attempts.
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Timezone is set to Manila so the date and time of the orders is correct.
 date_default_timezone_set('Asia/Manila');
 
-// Limits used by the login attempt limiter.
-define('MAX_ATTEMPTS', 3);       // wrong tries allowed
-define('LOCKOUT_SECONDS', 30);   // how long the lockout lasts
+// Constants for the login attempt limiter. They never change while the program runs.
+define('MAX_ATTEMPTS', 3);       // wrong passwords allowed before the lockout
+define('LOCKOUT_SECONDS', 30);   // seconds the user has to wait when locked out
 
-// Preset staff accounts (staff do not sign up). Change these to your own.
+// Staff accounts are saved here because staff can't sign up on the website.
+// Each one is an array with username, email, and password.
 define('STAFF_ACCOUNTS', [
     ['username' => 'barista', 'email' => 'staff@dejabrew.com', 'password' => 'staff12345']
 ]);
