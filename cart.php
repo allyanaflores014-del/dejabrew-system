@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/includes/functions.php';   // starts the session, so we know who is logged in
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -78,13 +82,18 @@
                 </div>
 
                 <p id="checkout-error" class="checkout-error"></p>
-                <button class="btn btn-primary" id="checkout-btn">Proceed to Checkout →</button>
+                <button class="btn btn-primary"
+                    id="checkout-btn"><?= isLoggedIn() ? 'Proceed to Checkout →' : 'Sign in to Checkout →' ?></button>
             </aside>
 
         </section>
 
     </main>
 
+    <script>
+        // Who is logged in? (from the PHP session). null = guest.
+        const LOGGED_IN_USER = <?= isLoggedIn() ? json_encode($_SESSION['user'], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) : 'null' ?>;
+    </script>
     <script src="js/orders-data.js"></script>
     <script src="js/availability.js"></script>
     <script src="js/cart.js"></script>

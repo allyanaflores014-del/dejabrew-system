@@ -3,6 +3,7 @@
  * index.php
  */
 require __DIR__ . '/includes/products.php';
+require_once __DIR__ . '/includes/functions.php';   // session + isLoggedIn() for the header
 
 // Short helper: makes text safe to print inside HTML (prevents broken markup / XSS).
 function e(string $text): string

@@ -26,6 +26,13 @@ function getNextOrderId() {
 
     return highest + 1;
 }
+// Only the orders of ONE customer (matched by email, ignoring capital letters).
+function getOrdersForCustomer(email) {
+    const wanted = String(email).toLowerCase();
+    return getOrders().filter(function (order) {
+        return String(order.customerEmail).toLowerCase() === wanted;
+    });
+}
 
 
 // ========== SAMPLE ORDERS ==========
