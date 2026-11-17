@@ -22,3 +22,10 @@ define('LOCKOUT_SECONDS', 30);   // seconds the user has to wait when locked out
 define('STAFF_ACCOUNTS', [
     ['username' => 'barista', 'email' => 'staff@dejabrew.com', 'password' => 'staff12345']
 ]);
+
+// Database (XAMPP defaults: user "root", no password)
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PORT', 3308);
+define('DB_PASS', '');
+define('DB_NAME', 'dejabrew');

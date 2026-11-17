@@ -1,45 +1,35 @@
 /* =====================================================
-   availability.js - reads what staff saved in Menu Management
-   (vanilla JavaScript)
- 
-   Staff page (js/staff-menu.js) saves this in localStorage:
-       key:   "dejabrew_availability"
-       value: {"1": true, "2": false}      (product id -> available?)
-   A product that is not in the object yet counts as Available.
- 
+   availability.js - asks the server which drinks are available.
+   The data comes from availability.php (the database), which staff
+   changes in Menu Management.
    ===================================================== */
- 
-const AVAILABILITY_KEY = 'dejabrew_availability';
- 
-function getAvailability() {
-    try {
-        return JSON.parse(localStorage.getItem(AVAILABILITY_KEY)) || {};
-    } catch (error) {
-        return {};   // storage empty or broken: everything is available
-    }
-}
- 
+
+// null = not loaded yet (everything counts as available until it loads)
+var availabilityData = null;
+
 // productId can be a number or text ("3"). Used by the home page AND by cart.js.
+// A product that is missing from the list was deleted, so it is not available.
 function isProductAvailable(productId) {
-    return getAvailability()[String(productId)] !== false;
+    if (availabilityData === null) return true;
+    return availabilityData[String(productId)] === true;
 }
- 
- 
+
+
 /* ---------- Home page only: update the cards and the banner ---------- */
- 
+
 function setCardAvailability(card, available) {
     const addButton = card.querySelector('.add-btn');
     const name = card.dataset.productName;
- 
+
     card.classList.toggle('is-sold-out', !available);
     addButton.disabled = !available;
     addButton.setAttribute('aria-label', available ? 'Add ' + name + ' to cart' : name + ' is sold out');
- 
+
     let badge = card.querySelector('.sold-out-badge');
- 
+
     if (!available) {
         card.classList.remove('is-open');          // a sold-out card never expands
- 
+
         if (!badge) {
             badge = document.createElement('span');
             badge.className = 'sold-out-badge';
@@ -50,34 +40,40 @@ function setCardAvailability(card, available) {
         badge.remove();
     }
 }
- 
+
 function applyAvailability() {
-    const data = getAvailability();
- 
-    // Product cards
     document.querySelectorAll('.product-card').forEach(function (card) {
-        setCardAvailability(card, data[card.dataset.productId] !== false);
+        setCardAvailability(card, isProductAvailable(card.dataset.productId));
     });
- 
-    // New Series banner button
+
     document.querySelectorAll('.series-btn').forEach(function (button) {
-        const available = data[button.dataset.productId] !== false;
- 
+        const available = isProductAvailable(button.dataset.productId);
+
         if (!button.dataset.label) button.dataset.label = button.textContent;   // remember "Add to Cart"
         button.textContent = available ? button.dataset.label : 'Sold Out';
         button.disabled = !available;
     });
 }
- 
-if (document.querySelector('.product-card') || document.querySelector('.series-btn')) {
-    applyAvailability();
- 
-    // Staff changed something in another tab of this browser: update right away.
-    window.addEventListener('storage', function (event) {
-        if (event.key === AVAILABILITY_KEY) applyAvailability();
-    });
- 
-    // Coming back with the browser's Back button
-    window.addEventListener('pageshow', applyAvailability);
+
+function loadAvailability() {
+    fetch('availability.php', { cache: 'no-store' })
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+            availabilityData = data;
+
+            if (document.querySelector('.product-card') || document.querySelector('.series-btn')) {
+                applyAvailability();
+            }
+            // cart.js: redraw the cart so removed / sold-out items are marked
+            if (typeof renderCart === 'function') renderCart();
+        })
+        .catch(function () { /* server not reachable: keep what the page already shows */ });
 }
- 
+
+loadAvailability();
+
+// Coming back with the Back button, or switching back to this tab
+window.addEventListener('pageshow', function (event) { if (event.persisted) loadAvailability(); });
+document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') loadAvailability();
+});
