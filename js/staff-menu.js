@@ -56,27 +56,28 @@ var menuList = document.getElementById('menu-list');
 var items = document.querySelectorAll('.menu-item');
 
 function showStatus(item, isAvailable) {
-    var text = isAvailable ? 'Available' : 'Not Available';
-
-    item.dataset.available = isAvailable ? 'true' : 'false';   // CSS uses this for the dot color
-    item.querySelector('.status-text').textContent = text;
-    item.querySelector('.switch-label').textContent = text;
-    item.querySelector('.availability-toggle').checked = isAvailable;
+    item.dataset.available = isAvailable ? 'true' : 'false';   // CSS uses this for the dot + button color
+    item.querySelector('.status-text').textContent = isAvailable ? 'Available' : 'Not Available';
+    item.querySelector('.btn-availability').textContent =
+        isAvailable ? 'Mark as Not Available' : 'Mark as Available';
 }
 
-menuList.addEventListener('change', function (event) {
-    if (!event.target.matches('.availability-toggle')) return;
+menuList.addEventListener('click', function (event) {
+    var button = event.target.closest('.btn-availability');
+    if (!button) return;
 
-    var item = event.target.closest('.menu-item');
-    var nowAvailable = event.target.checked;
+    var item = button.closest('.menu-item');
+    var nowAvailable = item.dataset.available !== 'true';   // flip the current status
 
     showStatus(item, nowAvailable);
+    button.disabled = true;
 
     sendToServer({
         action: 'toggle_availability',
         product_id: item.dataset.id,
         available: nowAvailable ? '1' : '0'
     }).then(function (result) {
+        button.disabled = false;
         if (!result.ok) {
             showStatus(item, !nowAvailable);   // saving failed: put it back
             alert(result.message || 'Could not save the change.');

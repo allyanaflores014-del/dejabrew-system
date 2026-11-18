@@ -217,14 +217,80 @@
     font-size: 0.75rem;
     color: var(--text-light);
     max-width: 440px;
+    flex: 1;
+    min-width: 0;
 }
 
 .detail-actions {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: flex-end;
+    flex-shrink: 0;
     gap: 10px;
+}
+
+/* Kebab icon in the row (replaces the chevron) */
+.row-menu-icon {
+    margin-left: 14px;
+    color: var(--text-dark);
+    flex-shrink: 0;
+}
+
+/* Pill buttons in the expanded part */
+.btn-pill {
+    padding: 5px 20px;
+    border: 1px solid var(--caramel);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--caramel-dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-pill:disabled { opacity: 0.6; cursor: wait; }
+
+.btn-pill.btn-edit:hover {
+    background-color: var(--caramel);
+    color: var(--white);
+}
+
+.btn-pill.btn-delete {
+    border-color: #e8421f;
+    color: #e8421f;
+}
+
+.btn-pill.btn-delete:hover {
+    background-color: #e8421f;
+    color: var(--white);
+}
+
+/* Availability button: green when the product is Not Available (action = make it available) */
+.btn-availability {
+    padding: 5px 24px;
+    border-color: #3a8a2e;
+    background-color: #3a8a2e;
+    color: var(--white);
+}
+
+.btn-availability:hover { background-color: #2f7425; border-color: #2f7425; }
+
+/* When the product is Available, the button becomes a quiet outline */
+.menu-item[data-available="true"] .btn-availability {
+    background-color: transparent;
+    border-color: var(--text-light);
+    color: var(--text-dark);
+}
+
+.menu-item[data-available="true"] .btn-availability:hover {
+    background-color: var(--espresso);
+    border-color: var(--espresso);
+    color: var(--white);
 }
 
 .switch {
@@ -604,5 +670,5 @@ dialog::backdrop { background: rgba(43, 27, 20, 0.55); }
         gap: 12px;
     }
 
-    .detail-actions { justify-content: flex-start; }
+        .detail-actions { justify-content: flex-start; flex-wrap: wrap; }
 }

@@ -89,12 +89,14 @@ if (empty($_SESSION['csrf'])) {
                                         <span class="cell-category"><?= escape($product['category_name']) ?></span>
                                         <span class="cell-price">P<?= (int) $product['price'] ?></span>
                                         <span class="cell-avail">
-                                            <span class="status-text"><?= $product['available'] ? 'Available' : 'Not Available' ?></span>
+                                            <span
+                                                class="status-text"><?= $product['available'] ? 'Available' : 'Not Available' ?></span>
                                             <span class="status-dot"></span>
-                                            <svg class="row-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                                stroke-linejoin="round" aria-hidden="true">
-                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            <svg class="row-menu-icon" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="currentColor" aria-hidden="true">
+                                                <circle cx="12" cy="5" r="1.8"></circle>
+                                                <circle cx="12" cy="12" r="1.8"></circle>
+                                                <circle cx="12" cy="19" r="1.8"></circle>
                                             </svg>
                                         </span>
                                     </button>
@@ -104,21 +106,19 @@ if (empty($_SESSION['csrf'])) {
                                         <p class="detail-desc"><?= escape($product['description']) ?></p>
 
                                         <div class="detail-actions">
-                                            <label class="switch">
-                                                <input type="checkbox" class="availability-toggle"
-                                                    <?= $product['available'] ? 'checked' : '' ?>>
-                                                <span class="slider"></span>
-                                                <span class="switch-label"><?= $product['available'] ? 'Available' : 'Not Available' ?></span>
-                                            </label>
-                                            <button type="button" class="btn-small btn-edit">Edit</button>
-                                            <button type="button" class="btn-small btn-delete">Delete</button>
+                                            <button type="button" class="btn-pill btn-availability">
+                                                <?= $product['available'] ? 'Mark as Not Available' : 'Mark as Available' ?>
+                                            </button>
+                                            <button type="button" class="btn-pill btn-edit">Edit</button>
+                                            <button type="button" class="btn-pill btn-delete">Delete</button>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
 
-                        <p class="menu-empty" id="menu-empty" <?= count($products) > 0 ? 'hidden' : '' ?>>No products found.</p>
+                        <p class="menu-empty" id="menu-empty" <?= count($products) > 0 ? 'hidden' : '' ?>>No products
+                            found.</p>
                     </div>
 
                     <!-- RIGHT: categories -->
@@ -132,14 +132,18 @@ if (empty($_SESSION['csrf'])) {
                                     <button type="button" class="cat-name"><?= escape($category['name']) ?></button>
                                     <button type="button" class="cat-action cat-rename"
                                         aria-label="Rename <?= escape($category['name']) ?>">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            aria-hidden="true">
                                             <path d="M12 20h9"></path>
                                             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path>
                                         </svg>
                                     </button>
                                     <button type="button" class="cat-action cat-delete"
                                         aria-label="Delete <?= escape($category['name']) ?>">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            aria-hidden="true">
                                             <polyline points="3 6 5 6 21 6"></polyline>
                                             <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
                                             <path d="M10 11v6M14 11v6"></path>
