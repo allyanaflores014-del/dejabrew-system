@@ -66,9 +66,11 @@ $sugarLevels = ['0%', '25%', '50%', '75%', '100%'];
 
                 <div class="filters" role="group" aria-label="Filter by category">
                     <button type="button" class="filter-btn is-active" data-category="all">All</button>
-                    <button type="button" class="filter-btn" data-category="iced-coffee">Iced Coffee</button>
-                    <button type="button" class="filter-btn" data-category="hot-coffee">Hot Coffee</button>
-                    <button type="button" class="filter-btn" data-category="frappe">Frappe</button>
+                    <?php foreach ($categories as $category): ?>
+                        <button type="button" class="filter-btn" data-category="<?= (int) $category['id'] ?>">
+                            <?= e($category['name']) ?>
+                        </button>
+                    <?php endforeach; ?>
                 </div>
             </div>
 

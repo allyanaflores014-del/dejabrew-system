@@ -17,23 +17,28 @@
  */
 $fullName = $product['prefix'] . ' ' . $product['name'];
 $id = (int) $product['id'];
+$soldOut = empty($product['available']);   // set by staff in Menu Management
 ?>
 <div class="product-slot" id="product-<?= $id ?>" data-category="<?= e($product['category']) ?>"
     data-name="<?= e($fullName) ?>">
 
-    <article class="product-card" data-product-id="<?= $id ?>" data-product-name="<?= e($fullName) ?>"
-        data-price="<?= (int) $product['price'] ?>" data-image="<?= e($product['image']) ?>">
+    <article class="product-card<?= $soldOut ? ' is-sold-out' : '' ?>" data-product-id="<?= $id ?>"
+        data-product-name="<?= e($fullName) ?>" data-price="<?= (int) $product['price'] ?>"
+        data-image="<?= e($product['image']) ?>">
         <div class="card-inner">
 
             <!-- ================= FRONT ================= -->
             <div class="card-face card-front">
                 <h3 class="card-title">
-                    <span class="title-script"><?= e($product['prefix']) ?></span>
+                    <?php if ($product['prefix'] !== ''): ?>
+                        <span class="title-script"><?= e($product['prefix']) ?></span>
+                    <?php endif; ?>
                     <span class="title-main"><?= e($product['name']) ?></span>
                 </h3>
 
                 <div class="card-image">
                     <img src="<?= e($product['image']) ?>" alt="<?= e($fullName) ?>" loading="lazy">
+                    <?php if ($soldOut): ?><span class="sold-out-badge">Sold out</span><?php endif; ?>
                     <button type="button" class="icon-btn info-btn" aria-label="Show details for <?= e($fullName) ?>">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.6" aria-hidden="true">
@@ -90,7 +95,8 @@ $id = (int) $product['id'];
                 </div>
 
                 <div class="card-footer">
-                    <button type="button" class="add-btn" aria-label="Add <?= e($fullName) ?> to cart">
+                    <button type="button" class="add-btn" <?= $soldOut ? 'disabled' : '' ?>
+                        aria-label="Add <?= e($fullName) ?> to cart">
                         <span class="add-btn-plus" aria-hidden="true">+</span>
                         <span class="add-btn-label">Add to Cart</span>
                     </button>
@@ -101,7 +107,9 @@ $id = (int) $product['id'];
             <!-- Clicking anywhere on the back flips it to the front (see script.js) -->
             <div class="card-face card-back">
                 <h3 class="card-title">
-                    <span class="title-script"><?= e($product['prefix']) ?></span>
+                    <?php if ($product['prefix'] !== ''): ?>
+                        <span class="title-script"><?= e($product['prefix']) ?></span>
+                    <?php endif; ?>
                     <span class="title-main"><?= e($product['name']) ?></span>
                 </h3>
 

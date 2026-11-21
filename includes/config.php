@@ -23,7 +23,9 @@ define('STAFF_ACCOUNTS', [
     ['username' => 'barista', 'email' => 'staff@dejabrew.com', 'password' => 'staff12345']
 ]);
 
-// The registered customer accounts are saved in this file so they are NOT lost when the session ends.
-// The folder "data" is created automatically on the first sign up.
-// The first line of the file is a PHP exit command, so nobody can read it by opening its link in the browser.
-define('ACCOUNTS_FILE', __DIR__ . '/../data/accounts.php');
+// Database (XAMPP defaults: user "root", no password)
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PORT', 3308);
+define('DB_PASS', '');
+define('DB_NAME', 'dejabrew');

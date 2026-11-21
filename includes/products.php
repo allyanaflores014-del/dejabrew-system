@@ -1,103 +1,60 @@
 <?php
 /*
- * products.php - all product data lives here.
- * Image paths are relative to index.php. File names are case-sensitive
- * on most web hosts, so keep them exactly as they appear in assets/.
- *
- * prefix   -> small script word above the name ("Classic")
- * name     -> big bold name ("Iced Coffee")
- * category -> iced-coffee | hot-coffee | frappe  (must match the filter buttons)
+ * products.php - loads products and categories from the database.
+ * Gives the pages two variables:
+ *   $products   -> same shape as before (id, prefix, name, category, image, description, price)
+ *                  plus: full_name, category_name, available
+ *   $categories -> list of [id, name]
+ * 'category' is the category ID (as text). The filter buttons use the same value.
  */
-$products = [
-    [
-        'id' => 1,
-        'prefix' => 'Classic',
-        'name' => 'Iced Coffee',
-        'category' => 'iced-coffee',
-        'image' => 'assets/Classic.png',
-        'description' => 'Smooth, refreshing coffee served over ice for a simple everyday brew.',
-        'price' => 89,
-    ],
-    [
-        'id' => 2,
-        'prefix' => 'Caramel',
-        'name' => 'Macchiato',
-        'category' => 'iced-coffee',
-        'image' => 'assets/CaramelMacchiato.png',
-        'description' => 'Espresso poured over cold milk and finished with a ribbon of buttery caramel.',
-        'price' => 109,
-    ],
-    [
-        'id' => 3,
-        'prefix' => 'Spanish',
-        'name' => 'Latte',
-        'category' => 'iced-coffee',
-        'image' => 'assets/SpanishLatte.png',
-        'description' => 'Espresso and milk sweetened with condensed milk for a rich, creamy sip.',
-        'price' => 109,
-    ],
-    [
-        'id' => 4,
-        'prefix' => 'Caramel',
-        'name' => 'Latte',
-        'category' => 'iced-coffee',
-        'image' => 'assets/CaramelLatte.png',
-        'description' => 'Smooth espresso and milk sweetened with a drizzle of golden caramel.',
-        'price' => 99,
-    ],
-    [
-        'id' => 5,
-        'prefix' => 'Vanilla',
-        'name' => 'Latte',
-        'category' => 'iced-coffee',
-        'image' => 'assets/VanillaLatte.png',
-        'description' => 'Creamy espresso and milk with a soft, sweet vanilla finish.',
-        'price' => 99,
-    ],
-    [
-        'id' => 6,
-        'prefix' => 'Classic',
-        'name' => 'Americano',
-        'category' => 'hot-coffee',
-        'image' => 'assets/Americano.png',
-        'description' => 'Bold espresso topped with hot water for a clean, straightforward cup.',
-        'price' => 79,
-    ],
-    [
-        'id' => 7,
-        'prefix' => 'Cafe',
-        'name' => 'Latte',
-        'category' => 'hot-coffee',
-        'image' => 'assets/CafeLatte.png',
-        'description' => 'Espresso with steamed milk and a light layer of foam. Simple and smooth.',
-        'price' => 89,
-    ],
-    [
-        'id' => 8,
-        'prefix' => 'Mocha',
-        'name' => 'Latte',
-        'category' => 'hot-coffee',
-        'image' => 'assets/MochaLatte.png',
-        'description' => 'Espresso, steamed milk, and chocolate for a cozy, comforting cup.',
-        'price' => 99,
-    ],
-    [
-        'id' => 9,
-        'prefix' => 'Chocolate',
-        'name' => 'Frappe',
-        'category' => 'frappe',
-        'image' => 'assets/ChocolateFrappe.png',
-        'description' => 'Blended coffee and chocolate with ice, topped with whipped cream.',
-        'price' => 119,
-    ],
-    [
-        'id' => 10,
-        'prefix' => 'Java Chip',
-        'name' => 'Frappe',
-        'category' => 'frappe',
-        'image' => 'assets/JavaChipFrappe.png',
-        'description' => 'Icy blended coffee with chocolate chips and a swirl of whipped cream.',
-        'price' => 129,
-    ],
-];
+require_once __DIR__ . '/db.php';
 
+// "Caramel Macchiato" -> ["Caramel", "Macchiato"]. One word -> ["", "Americano"].
+function splitProductName(string $fullName): array
+{
+    $fullName = trim($fullName);
+    $space = strpos($fullName, ' ');
+
+    if ($space === false) {
+        return ['', $fullName];
+    }
+    return [substr($fullName, 0, $space), substr($fullName, $space + 1)];
+}
+
+$db = getDB();
+
+$products = [];
+$result = $db->query(
+    'SELECT p.product_id, p.product_name, p.description, p.image, p.base_price,
+            p.is_available, p.category_id, c.category_name
+     FROM products p
+     JOIN categories c ON c.category_id = p.category_id
+     ORDER BY p.product_id'
+);
+
+while ($row = $result->fetch_assoc()) {
+    [$prefix, $name] = splitProductName($row['product_name']);
+
+    $products[] = [
+        'id' => (int) $row['product_id'],
+        'prefix' => $prefix,
+        'name' => $name,
+        'full_name' => $row['product_name'],
+        'category' => (string) $row['category_id'],
+        'category_name' => $row['category_name'],
+        'image' => $row['image'],
+        'description' => $row['description'],
+        'price' => (int) $row['base_price'],
+        'available' => (int) $row['is_available'] === 1,
+    ];
+}
+
+$categories = [];
+$result = $db->query('SELECT category_id, category_name FROM categories ORDER BY category_name');
+
+while ($row = $result->fetch_assoc()) {
+    $categories[] = [
+        'id' => (int) $row['category_id'],
+        'name' => $row['category_name'],
+    ];
+}
