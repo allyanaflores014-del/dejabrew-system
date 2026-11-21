@@ -50,8 +50,8 @@ require_once __DIR__ . '/includes/functions.php';   // starts the session, so we
             <aside class="order-summary">
                 <h2>Order Summary</h2>
 
-                <label for="pickup-time">Pickup Time:</label>
-                <input type="time" id="pickup-time">
+               <label for="pickup-time">Pickup Time:</label>
+               <select id="pickup-time"></select>
 
                 <label for="payment-method">Payment Method:</label>
                 <select id="payment-method">

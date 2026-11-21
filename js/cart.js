@@ -234,17 +234,20 @@ document.addEventListener('change', function (event) {
 });
  
  
+
 // ========== 8. PICKUP TIME RULES ==========
 const STORE_OPEN = '11:00';    // 11:00 AM
 const STORE_CLOSE = '23:00';   // 11:00 PM
+const LAST_PICKUP = '22:45';   // 10:45 PM (15 mins before closing)
 const PREP_MINUTES = 15;       // the barista needs this long to prepare the order
- 
+const SLOT_STEP = 15;          // pickup choices every 15 minutes
+
 // "14:30" -> 870 (minutes since midnight), so we can compare times
 function timeToMinutes(timeText) {
     const parts = timeText.split(':');
     return Number(parts[0]) * 60 + Number(parts[1]);
 }
- 
+
 // "14:30" -> "2:30 PM" (for friendly messages)
 function formatTime(timeText) {
     const parts = timeText.split(':').map(Number);
@@ -252,7 +255,33 @@ function formatTime(timeText) {
     const hour12 = parts[0] % 12 || 12;
     return hour12 + ':' + String(parts[1]).padStart(2, '0') + ' ' + ampm;
 }
- 
+
+// Fills the Pickup Time dropdown with only the times a customer can really choose
+function buildPickupSlots() {
+    const select = document.getElementById('pickup-time');
+    if (!select) return;
+
+    const rightNow = new Date();
+    const nowMinutes = rightNow.getHours() * 60 + rightNow.getMinutes();
+
+    select.innerHTML = '<option value="">Select pickup time</option>';
+    let count = 0;
+
+    for (let m = timeToMinutes(STORE_OPEN); m <= timeToMinutes(LAST_PICKUP); m += SLOT_STEP) {
+        if (m < nowMinutes + PREP_MINUTES) continue;   // already passed or too soon
+
+        const value = String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+        const option = document.createElement('option');
+        option.value = value;                    // "13:30" (same format your checkout already reads)
+        option.textContent = formatTime(value);  // "1:30 PM"
+        select.appendChild(option);
+        count++;
+    }
+
+    if (count === 0) {
+        select.options[0].textContent = 'No more pickup slots today';
+    }
+}
  
 // ========== 9. PLACE THE ORDER ==========
  
@@ -317,11 +346,12 @@ function placeOrder(pickupTime) {
  
  
 // ========== 10. CHECKOUT BUTTON ==========
+// ========== 10. CHECKOUT BUTTON ==========
 function handleCheckout() {
     const error = document.getElementById('checkout-error');
     const pickupField = document.getElementById('pickup-time');
     if (!pickupField) return;
- 
+
     function showError(text) {
         if (error) {
             error.textContent = text;
@@ -329,7 +359,7 @@ function handleCheckout() {
             alert(text);
         }
     }
- 
+
     // A. Login first. Guests are sent to the login page, and come back to the cart after signing in.
     //    (What they typed here is already saved, so it will still be filled in.)
     const user = getCurrentUser();
@@ -337,71 +367,71 @@ function handleCheckout() {
         window.location.href = 'login.php?next=cart';
         return;
     }
- 
+
     // B. Only customer accounts can order (staff accounts cannot)
     if (user.role !== 'customer') {
         showError('Staff accounts cannot place orders. Please sign in with a customer account.');
         return;
     }
- 
+
     // C. No sold-out drinks in the cart
     if (getCart().some(function (item) { return !itemIsAvailable(item); })) {
         showError('Please remove the unavailable items from your cart.');
         return;
     }
- 
+
     // Make sure orders-data.js was loaded in cart.php
     if (typeof saveOrders !== 'function' || typeof getNextOrderId !== 'function') {
         showError('Orders are not set up. Add js/orders-data.js before js/cart.js in cart.php.');
         return;
     }
- 
+
     if (getCart().length === 0) {
         showError('Your cart is empty.');
         return;
     }
- 
+
     const pickup = pickupField.value;
- 
+
     // 0. Is the shop still accepting orders today?
     const rightNow = new Date();
     const rightNowMinutes = rightNow.getHours() * 60 + rightNow.getMinutes();
-    if (rightNowMinutes + PREP_MINUTES > timeToMinutes(STORE_CLOSE)) {
+    if (rightNowMinutes + PREP_MINUTES > timeToMinutes(LAST_PICKUP)) {
         showError('Sorry, we are no longer accepting orders for today.');
         return;
     }
- 
+
     // 1. A time must be chosen
     if (pickup === '') {
         showError('Please choose a pickup time.');
         return;
     }
- 
+
     const chosen = timeToMinutes(pickup);
- 
-    // 2. It must be within store hours
-    if (chosen < timeToMinutes(STORE_OPEN) || chosen > timeToMinutes(STORE_CLOSE)) {
-        showError('Pickup time must be between ' + formatTime(STORE_OPEN) + ' and ' + formatTime(STORE_CLOSE) + '.');
+
+    // 2. It must be within pickup hours (11:00 AM to 10:45 PM)
+    if (chosen < timeToMinutes(STORE_OPEN) || chosen > timeToMinutes(LAST_PICKUP)) {
+        showError('Pickup time must be between ' + formatTime(STORE_OPEN) + ' and ' + formatTime(LAST_PICKUP) + '.');
         return;
     }
- 
+
     // 3. It must be at least PREP_MINUTES from now
     if (chosen < rightNowMinutes + PREP_MINUTES) {
         showError('Please choose a time at least ' + PREP_MINUTES + ' minutes from now.');
         return;
     }
- 
+
     if (error) error.textContent = '';
- 
+
     // All good: create the order
     const order = placeOrder(pickup);
     renderCart();   // the cart is empty now, so the Empty Cart design appears
- 
+
     if (order) {
         alert('Order #' + order.id + ' placed! Pay in cash when you pick it up at ' + formatTime(pickup) + '.');
     }
 }
- 
+
  
 // ========== 11. CART ICON BADGE ==========
 // Shows the total number of drinks on the cart icon in the navbar
@@ -508,6 +538,6 @@ document.addEventListener('click', function (event) {
  
  
 // ========== 14. WHEN THE PAGE LOADS ==========
+buildPickupSlots();
 loadOrderDetails();
 renderCart();
- 
